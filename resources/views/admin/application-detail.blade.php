@@ -1,0 +1,146 @@
+@extends('layouts.admin')
+
+@section('title', 'Application — '.$application->full_name)
+@section('page-title', 'Application Detail')
+@section('page-sub', $application->ref_id)
+
+@section('content')
+
+<div style="margin-bottom:16px;">
+    <a href="{{ route('admin.applications.index') }}" class="btn btn-outline btn-sm">
+        <i class="fa-solid fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+
+    {{-- Left: Application Form Data --}}
+    <div>
+        <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-id-card"></i> Personal Information</h2>
+                <span class="badge badge-{{ $application->status }}">{{ ucfirst($application->status) }}</span>
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item"><div class="detail-label">Full Name</div><div class="detail-value">{{ $application->full_name }}</div></div>
+                <div class="detail-item"><div class="detail-label">Sex</div><div class="detail-value">{{ $application->sex }}</div></div>
+                <div class="detail-item"><div class="detail-label">Birthday</div><div class="detail-value">{{ $application->birthday->format('F d, Y') }}</div></div>
+                <div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">{{ $application->age }} years old</div></div>
+                <div class="detail-item"><div class="detail-label">Barangay</div><div class="detail-value">{{ $application->barangay }}</div></div>
+                <div class="detail-item"><div class="detail-label">Civil Status</div><div class="detail-value">{{ $application->civil_status }}</div></div>
+                <div class="detail-item"><div class="detail-label">Parent Status</div><div class="detail-value">{{ $application->parent_status }}</div></div>
+                <div class="detail-item"><div class="detail-label">Educational Attainment</div><div class="detail-value">{{ $application->education }}</div></div>
+                <div class="detail-item"><div class="detail-label">SPES Beneficiary Type</div>
+                    <div class="detail-value">
+                        <span class="badge {{ $application->spes_status === 'new' ? 'badge-new' : 'badge-baby' }}">
+                            {{ $application->spes_status === 'new' ? 'New (1st time)' : 'SPES Baby (2nd/3rd time)' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item"><div class="detail-label">Contact Number</div><div class="detail-value">{{ $application->contact_no }}</div></div>
+                <div class="detail-item"><div class="detail-label">Messenger Account</div><div class="detail-value">{{ $application->messenger ?? '—' }}</div></div>
+                <div class="detail-item"><div class="detail-label">Mother's Name</div><div class="detail-value">{{ $application->mother_name }}</div></div>
+                <div class="detail-item"><div class="detail-label">Father / Guardian</div><div class="detail-value">{{ $application->father_guardian_name }}</div></div>
+            </div>
+        </div>
+
+        {{-- Uploaded Documents --}}
+        <div class="card" style="margin-bottom:20px;">
+            <div class="card-header"><h2><i class="fa-solid fa-folder-open"></i> Uploaded Documents</h2></div>
+            <div class="card-body">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+                    @foreach([
+                        ['label'=>'Resume','key'=>'resume','icon'=>'fa-file-user'],
+                        ['label'=>'Application Letter','key'=>'application_letter','icon'=>'fa-file-pen'],
+                        ['label'=>'Certificate of Indigency','key'=>'indigency','icon'=>'fa-file-certificate'],
+                    ] as $doc)
+                        <div style="border:1.5px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+                            <i class="fa-solid {{ $doc['icon'] }}" style="font-size:1.8rem;color:{{ $application->{$doc['key']} ? 'var(--primary)' : 'var(--border)' }};margin-bottom:8px;display:block;"></i>
+                            <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;">{{ $doc['label'] }}</div>
+                            @if($application->{$doc['key']})
+                                <a href="{{ route('applications.document.view', ['application' => $application->id, 'document' => $doc['key']]) }}"
+                                   class="btn btn-primary btn-sm" style="margin-bottom:6px; display:inline-flex; align-items:center; gap:6px;">
+                                    <i class="fa-solid fa-eye"></i> View
+                                </a>
+                                <a href="{{ asset('storage/'.$application->{$doc['key']}) }}" target="_blank"
+                                   class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px;" download>
+                                    <i class="fa-solid fa-download"></i> Download
+                                </a>
+                            @else
+                                <span style="font-size:.78rem;color:var(--text-muted);">Not uploaded</span>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Right: Actions & Comments --}}
+    <div>
+        {{-- Submission info --}}
+        <div class="card" style="margin-bottom:16px;">
+            <div class="card-header"><h2><i class="fa-solid fa-info-circle"></i> Submission Info</h2></div>
+            <div class="card-body" style="font-size:.875rem;">
+                <p><strong>Reference ID:</strong><br><code>{{ $application->ref_id }}</code></p>
+                <p style="margin-top:10px;"><strong>Submitted:</strong><br>{{ $application->created_at->format('F d, Y \a\t g:i A') }}</p>
+                <p style="margin-top:10px;"><strong>Applicant Email:</strong><br>{{ $application->user->email ?? '—' }}</p>
+            </div>
+        </div>
+
+        {{-- Actions --}}
+        @if($application->status === 'pending')
+        <div class="card" style="margin-bottom:16px;">
+            <div class="card-header"><h2><i class="fa-solid fa-gavel"></i> Decision</h2></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+                <form method="POST" action="{{ route('admin.applications.approve', $application) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-success" style="width:100%;" onclick="return confirm('Approve this application?')">
+                        <i class="fa-solid fa-circle-check"></i> Approve Application
+                    </button>
+                </form>
+                <form method="POST" action="{{ route('admin.applications.deny', $application) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-danger" style="width:100%;" onclick="return confirm('Deny this application?')">
+                        <i class="fa-solid fa-circle-xmark"></i> Deny Application
+                    </button>
+                </form>
+            </div>
+        </div>
+        @elseif($application->status === 'approved')
+        <div class="card" style="margin-bottom:16px;">
+            <div class="card-header"><h2><i class="fa-solid fa-file-circle-check"></i> Employment Forms</h2></div>
+            <div class="card-body">
+                <a href="{{ route('admin.applications.forms', $application) }}" class="btn btn-primary" style="width:100%;text-align:center;">
+                    <i class="fa-solid fa-eye"></i> View Application Forms
+                </a>
+            </div>
+        </div>
+        @endif
+
+        {{-- Admin Comment --}}
+        <div class="card">
+            <div class="card-header"><h2><i class="fa-solid fa-comment-dots"></i> Admin Comment / Feedback</h2></div>
+            <div class="card-body">
+                @if($application->admin_comment)
+                    <div style="background:#f5f7fa;border-left:4px solid var(--primary);padding:12px;border-radius:6px;margin-bottom:14px;font-size:.875rem;">
+                        {{ $application->admin_comment }}
+                    </div>
+                @endif
+                <form method="POST" action="{{ route('admin.applications.comment', $application) }}">
+                    @csrf
+                    <textarea name="admin_comment" rows="4" placeholder="Write feedback or notes for the applicant…"
+                        style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:7px;font-size:.875rem;resize:vertical;font-family:inherit;outline:none;"
+                    >{{ old('admin_comment', $application->admin_comment) }}</textarea>
+                    @error('admin_comment')
+                        <div style="color:var(--danger);font-size:.78rem;margin-top:4px;">{{ $message }}</div>
+                    @enderror
+                    <button type="submit" class="btn btn-primary" style="margin-top:10px;width:100%;">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Comment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
