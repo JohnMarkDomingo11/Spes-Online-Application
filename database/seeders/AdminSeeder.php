@@ -10,15 +10,27 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create the single admin account
-        if (! User::where('email', 'pesocamalaniugan@gmail.com')->exists()) {
-            User::create([
-                'name'     => 'PESO Admin',
-                'username' => 'pesoadmin',
-                'email'    => 'pesocamal@gmail.com',
-                'password' => Hash::make('admin123'),
-                'role'     => 'admin',
-            ]);
+        $adminEmail = 'lgulalloinformationoffice@gmail.com';
+
+        $admin = User::where('email', $adminEmail)
+            ->orWhere('username', 'pesoadmin')
+            ->first();
+
+        if ($admin) {
+            $admin->email = $adminEmail;
+            $admin->role = 'admin';
+            $admin->username = $admin->username ?: 'pesoadmin';
+            $admin->save();
+
+            return;
         }
+
+        User::create([
+            'name'     => 'PESO Admin',
+            'username' => 'pesoadmin',
+            'email'    => $adminEmail,
+            'password' => Hash::make('admin123'),
+            'role'     => 'admin',
+        ]);
     }
 }

@@ -246,9 +246,9 @@ document.addEventListener('DOMContentLoaded', function(){
 <!-- ── Sidebar ───────────────────────────────────────────── -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('images/spes.logo.jpg') }}" alt="SPES Logo">
+        <img src="{{ asset('images/lallo_logo.png') }}" alt="PESO Lallo Logo">
         <div>
-            <span>SPES Admin<small>PESO Camalaniugan</small></span>
+            <span>SPES Admin<small>PESO Lallo</small></span>
         </div>
     </div>
 
@@ -352,10 +352,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <!-- ── Footer ─────────────────────────────────────────────── -->
 <footer style="margin-left:var(--sidebar-w);background:#fff;border-top:1px solid var(--border);padding:14px 28px;font-size:.78rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span>&copy; {{ date('Y') }} SPES Management System — PESO Camalaniugan</span>
+    <span>&copy; {{ date('Y') }} SPES Management System — PESO Lallo</span>
     <span>
         <a href="https://www.facebook.com" target="_blank" style="color:var(--primary);text-decoration:none;margin-right:14px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
-        <a href="mailto:pesocamalaniugan@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> pesocamalaniugan@gmail.com</a>
+        <a href="mailto:lgulalloinformationoffice@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> lgulalloinformationoffice@gmail.com</a>
     </span>
 </footer>
 

@@ -129,8 +129,8 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('images/spes.logo.jpg') }}" alt="SPES">
-        <div><span>SPES Portal<small>PESO Camalaniugan</small></span></div>
+        <img src="{{ asset('images/peso_lallo.jpg') }}" alt="SPES">
+        <div><span>SPES Portal<small>PESO Lallo</small></span></div>
     </div>
     <nav class="sidebar-nav">
         <a href="{{ route('dashboard') }}" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
@@ -337,20 +337,19 @@
                 <div class="card-body">
                     <div class="doc-grid">
                         @foreach([
-                            ['label'=>'Resume','key'=>'resume','icon'=>'fa-file-user','color'=>'#1565c0'],
+                            ['label'=>'Birth Certificate','key'=>'resume','icon'=>'fa-file-user','color'=>'#1565c0'],
                         ] as $doc)
                         <div class="doc-item">
                             <i class="fa-solid {{ $doc['icon'] }}" style="color:{{ $application->{$doc['key']} ? $doc['color'] : '#ccc' }}"></i>
                             <div class="label">{{ $doc['label'] }}</div>
                             @if($application->{$doc['key']})
-                                <a href="{{ route('applications.document.view', ['application' => $application->id, 'document' => $doc['key']]) }}" style="display:inline-flex;align-items:center;gap:6px;justify-content:center;width:100%;margin-bottom:8px;padding:10px 12px;border-radius:8px;background:#0d47a1;color:#fff;text-decoration:none;font-size:.8rem;">
+                                <button type="button" onclick="openDocumentModal('{{ route('applications.document.view', ['application' => $application->id, 'document' => $doc['key']]) }}', '{{ $doc['label'] }}')" style="display:inline-flex;align-items:center;gap:6px;justify-content:center;min-width:110px;padding:8px 16px;border:0;border-radius:8px;background:#0d47a1;color:#fff;cursor:pointer;font-size:.72rem;font-weight:600;line-height:1.2;">
                                     <i class="fa-solid fa-eye"></i> View
-                                </a>
-                                <a href="{{ asset('storage/'.$application->{$doc['key']}) }}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;justify-content:center;width:100%;padding:10px 12px;border-radius:8px;background:#1976d2;color:#fff;text-decoration:none;font-size:.8rem;" download>
-                                    <i class="fa-solid fa-download"></i> Download
-                                </a>
+                                </button>
                             @else
-                                <span style="font-size:.75rem;color:#bbb;">Not uploaded</span>
+                                <a href="{{ route('applications.edit') }}" style="display:inline-flex;align-items:center;gap:6px;justify-content:center;min-width:110px;padding:8px 16px;border-radius:8px;background:#1976d2;color:#fff;text-decoration:none;font-size:.72rem;font-weight:600;line-height:1.2;">
+                                    <i class="fa-solid fa-upload"></i> Upload
+                                </a>
                             @endif
                         </div>
                         @endforeach
@@ -358,6 +357,57 @@
                 </div>
             </div>
         </div>
+
+        <div id="documentModal" style="position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:2000; padding:24px;">
+            <div style="width:min(980px, 92vw); max-height:90vh; background:#fff; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.25); overflow:hidden; border:1px solid var(--border);">
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border); background:#f8fafb;">
+                    <strong id="documentModalTitle" style="font-size:1rem; color:var(--primary);">Document Preview</strong>
+                    <button type="button" onclick="closeDocumentModal()" style="border:1.5px solid var(--border); background:#fff; color:var(--primary); border-radius:7px; padding:7px 12px; cursor:pointer; font-weight:600;">
+                        <i class="fa-solid fa-xmark"></i> Close
+                    </button>
+                </div>
+                <div style="padding:12px; background:#f5f5f5; height:80vh;">
+                    <iframe id="documentFrame" title="Document Preview" style="width:100%; height:100%; border:none; background:#fff; border-radius:8px;"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openDocumentModal(url, title) {
+                const modal = document.getElementById('documentModal');
+                const frame = document.getElementById('documentFrame');
+                const titleEl = document.getElementById('documentModalTitle');
+
+                titleEl.textContent = title + ' Preview';
+                modal.style.display = 'flex';
+
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const objectUrl = URL.createObjectURL(blob);
+                        frame.src = objectUrl;
+                    })
+                    .catch(() => {
+                        frame.src = url;
+                    });
+            }
+
+            function closeDocumentModal() {
+                const modal = document.getElementById('documentModal');
+                const frame = document.getElementById('documentFrame');
+                modal.style.display = 'none';
+                if (frame.src && frame.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(frame.src);
+                }
+                frame.src = 'about:blank';
+            }
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeDocumentModal();
+                }
+            });
+        </script>
 
         <div>
             <div class="card">
@@ -395,10 +445,10 @@
 </div>
 
 <footer style="margin-left:var(--sidebar-w);background:#fff;border-top:1px solid var(--border);padding:14px 24px;font-size:.78rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span>&copy; {{ date('Y') }} SPES Management System — PESO Camalaniugan</span>
+    <span>&copy; {{ date('Y') }} SPES Management System — PESO Lallo</span>
     <span>
         <a href="https://www.facebook.com" target="_blank" style="color:var(--primary);text-decoration:none;margin-right:14px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
-        <a href="mailto:pesocamalaniugan@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> pesocamalaniugan@gmail.com</a>
+        <a href="mailto:lgulalloinformationoffice@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> lgulalloinformationoffice@gmail.com</a>
     </span>
 </footer>
 </body>

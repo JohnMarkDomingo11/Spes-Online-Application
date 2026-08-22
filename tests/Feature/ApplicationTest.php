@@ -53,6 +53,67 @@ class ApplicationTest extends TestCase
     }
 
     /** @test */
+    public function user_sees_upload_button_when_birth_certificate_is_missing()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Application::factory()->for($user)->create(['resume' => null]);
+
+        $this->get(route('applications.myApplication'))
+            ->assertOk()
+            ->assertSee('Upload');
+    }
+
+    /** @test */
+    public function user_sees_view_button_when_birth_certificate_exists()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Application::factory()->for($user)->create([
+            'resume' => 'applications/resumes/sample.pdf',
+            'status' => 'pending',
+        ]);
+
+        $this->get(route('applications.myApplication'))
+            ->assertOk()
+            ->assertSee('View');
+    }
+
+    /** @test */
+    public function user_document_preview_uses_birth_certificate_name()
+    {
+        $user = User::factory()->create();
+        $application = Application::factory()->for($user)->create([
+            'resume' => 'applications/resumes/sample.pdf',
+        ]);
+
+        $this->actingAs($user);
+
+        $this->get(route('applications.document.view', ['application' => $application->id, 'document' => 'resume']))
+            ->assertOk()
+            ->assertHeader('content-disposition', 'inline; filename="birth-certificate.pdf"');
+    }
+
+    /** @test */
+    public function admin_sees_uploaded_birth_certificate_on_application_detail()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $application = Application::factory()->create([
+            'resume' => 'applications/resumes/sample.pdf',
+        ]);
+
+        $this->actingAs($admin);
+
+        $this->get(route('admin.applications.show', $application))
+            ->assertOk()
+            ->assertSee('Birth Certificate')
+            ->assertSee('View')
+            ->assertSee('Download');
+    }
+
+    /** @test */
     public function admin_can_approve_and_deny_application()
     {
         $admin = User::factory()->create(['role' => 'admin']);

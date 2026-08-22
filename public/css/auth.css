@@ -234,7 +234,7 @@ body {
     }
 
     .auth-left {
-        min-height: auto;
+        min-height: 0;
         padding: 40px 30px;
     }
 
@@ -243,7 +243,7 @@ body {
     }
 
     .auth-right {
-        min-height: auto;
+        min-height: 0;
         padding: 40px 30px;
     }
 
@@ -471,7 +471,7 @@ body {
     align-items: center;
     justify-content: center;
     /* use image from public/images (relative to this CSS file) */
-    background-image: url('../images/bg.jpg.jpg');
+    background-image: url('../images/lallo_background.jpg');
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;

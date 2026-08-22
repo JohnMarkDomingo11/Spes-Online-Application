@@ -13,9 +13,10 @@ class Application extends Model
     protected $fillable = [
         'ref_id', 'user_id',
         // Personal
-        'full_name', 'sex', 'birthday', 'age', 'barangay', 'civil_status',
+        'full_name', 'surname', 'first_name', 'middle_name', 'sex', 'birthday', 'age', 'barangay', 'civil_status',
         'parent_status', 'education', 'spes_status', 'mother_name',
-        'father_guardian_name', 'contact_no', 'messenger',
+        'father_guardian_name', 'contact_no', 'messenger', 'facebook',
+        'mother_occupation', 'father_occupation', 'mother_contact_no', 'father_contact_no',
         // Documents
         'resume', 'application_letter', 'indigency',
         // Status

@@ -119,7 +119,7 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
         <img src="{{ asset('images/spes.logo.jpg') }}" alt="SPES">
-        <div><span>SPES Portal<small>PESO Camalaniugan</small></span></div>
+        <div><span>SPES Portal<small>PESO Lallo</small></span></div>
     </div>
     <nav class="sidebar-nav">
         <a href="{{ route('dashboard') }}" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
@@ -194,11 +194,22 @@
                 <h3>Personal Information</h3>
             </div>
             <div class="form-card-body">
-                <div class="form-row full">
+                <div class="form-row three">
                     <div class="form-group">
-                        <label>Full Name <span class="req">*</span></label>
-                        <input type="text" name="full_name" value="{{ $getDefault('full_name') }}" placeholder="Last Name, First Name, Middle Name" required>
-                        @error('full_name')<div class="error">{{ $message }}</div>@enderror
+                        <label>Surname <span class="req">*</span></label>
+                        <input type="text" name="surname" value="{{ $getDefault('surname') }}" placeholder="Last Name" required>
+                        @error('surname')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="form-group">
+                        <label>First Name <span class="req">*</span></label>
+                        <input type="text" name="first_name" value="{{ $getDefault('first_name') }}" placeholder="First Name" required>
+                        @error('first_name')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="form-group">
+                        <label>Middle Name <span class="req">*</span></label>
+                        <input type="text" name="middle_name" id="middle_name" value="{{ $getDefault('middle_name') }}" placeholder="Middle Name" required>
+                        @error('middle_name')<div class="error">{{ $message }}</div>@enderror
+                        <div id="middle_name_warning" class="error" style="display:none; margin-top:5px;">Please enter the full middle name, not just initials.</div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -236,7 +247,7 @@
                         <label>Barangay <span class="req">*</span></label>
                         <select name="barangay" required>
                             <option value="">-- Select Barangay --</option>
-                            @foreach(['Alibago','Alintatao','Angang','Bical','Cabaggan','Camalaniugan Centro','Catotoran Norte','Catotoran Sur','Centro Norte','Centro Sur','Dungeg','Estefania','Fula','Intan','Lablabig','Lallayug','Luec','Minanga','Nararagan','Nattanzan','Pata','San Antonio','San Isidro','San Lorenzo','Santa Isabel','Santa Maria','Sicalao','Sinabbaran','Ubbog'] as $b)
+                            @foreach(['Abagao','Alaguia','Bagumbayan','Bangag','Bical','Bicud','Binag','Cabayabasan (Capacuan)','Cagoran','Cambong','Catayauan','Catugan','Centro (Poblacion)','Cullit','Dagupan','Dalaya','Fabrica','Fusina','Jurisdiction','Lalafugan','Logac','Magapit','Malanao','Maxingal','Naguilian','Paranum','Rosario','San Antonio (Lafu)','San Jose','San Juan','San Lorenzo','San Mariano','Santa Maria','Santa Teresa (Magallungon)','Tucalana'] as $b)
                                 <option value="{{ $b }}" {{ $getDefault('barangay')===$b ? 'selected' : '' }}>{{ $b }}</option>
                             @endforeach
                         </select>
@@ -248,7 +259,7 @@
                         <label>Parent Status <span class="req">*</span></label>
                         <select name="parent_status" required>
                             <option value="">-- Select --</option>
-                            @foreach(['Both Parents','Single Parent','Orphan','Guardian'] as $ps)
+                            @foreach(['Both Parents','Solo Parent','Orphan','Guardian'] as $ps)
                                 <option value="{{ $ps }}" {{ $getDefault('parent_status')===$ps ? 'selected' : '' }}>{{ $ps }}</option>
                             @endforeach
                         </select>
@@ -281,6 +292,13 @@
                         @error('spes_status')<div class="error">{{ $message }}</div>@enderror
                     </div>
                 </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Facebook Profile <span class="req">*</span></label>
+                        <input type="text" name="facebook" value="{{ $getDefault('facebook') }}" placeholder="e.g., https://facebook.com/yourprofile or your Facebook URL" required>
+                        @error('facebook')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -305,12 +323,31 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Contact Number <span class="req">*</span></label>
-                        <input type="text" name="contact_no" value="{{ $getDefault('contact_no') }}" placeholder="09XXXXXXXXX" maxlength="20" required>
-                        @error('contact_no')<div class="error">{{ $message }}</div>@enderror
+                        <label>Mother's Occupation <span class="req">*</span></label>
+                        <input type="text" name="mother_occupation" value="{{ $getDefault('mother_occupation') }}" placeholder="Enter occupation" required>
+                        @error('mother_occupation')<div class="error">{{ $message }}</div>@enderror
                     </div>
                     <div class="form-group">
-                        <label>Messenger / Facebook Account</label>
+                        <label>Father's Occupation <span class="req">*</span></label>
+                        <input type="text" name="father_occupation" value="{{ $getDefault('father_occupation') }}" placeholder="Enter occupation" required>
+                        @error('father_occupation')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mother's Contact Number <span class="req">*</span></label>
+                        <input type="text" name="mother_contact_no" value="{{ $getDefault('mother_contact_no') }}" placeholder="09XXXXXXXXX" maxlength="20" required>
+                        @error('mother_contact_no')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="form-group">
+                        <label>Father's Contact Number <span class="req">*</span></label>
+                        <input type="text" name="father_contact_no" value="{{ $getDefault('father_contact_no') }}" placeholder="09XXXXXXXXX" maxlength="20" required>
+                        @error('father_contact_no')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Facebook Account</label>
                         <input type="text" name="messenger" value="{{ $getDefault('messenger') }}" placeholder="Facebook name or link (optional)">
                         @error('messenger')<div class="error">{{ $message }}</div>@enderror
                     </div>
@@ -326,20 +363,46 @@
             </div>
             <div class="form-card-body">
                 <p style="font-size:.83rem;color:var(--text-muted);margin-bottom:18px;">
-                    Upload PDF, DOC, DOCX, JPG, or PNG files. Maximum 5MB per file.
+                    Upload a PDF file only. Maximum 5MB per file.
                 </p>
-                <div class="form-row">
+                <div class="form-row full">
                     <div class="form-group">
-                        <label>Resume</label>
+                        <label>Birth Certificate</label>
                         <label class="file-upload-area" for="resume">
                             <i class="fa-solid fa-file-user"></i>
-                            <strong>Click to upload Resume</strong>
-                            <p>PDF, DOC, JPG, PNG</p>
+                            <strong>Click to upload Birth Certificate</strong>
+                            <p>PDF only</p>
                             <div class="file-name" id="resumeName"></div>
                         </label>
-                        <input type="file" name="resume" id="resume" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        <input type="file" name="resume" id="resume" style="display:none;" accept=".pdf,application/pdf" required
                             onchange="document.getElementById('resumeName').textContent = this.files[0]?.name || ''">
                         @error('resume')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Certificate of Enrollment</label>
+                        <label class="file-upload-area" for="certificate_enrollment">
+                            <strong>Click to upload Certificate of Enrollment</strong>
+                            <p>PDF only</p>
+                            <div class="file-name" id="certificateEnrollmentName"></div>
+                        </label>
+                        <input type="file" name="certificate_enrollment" id="certificate_enrollment" style="display:none;" accept=".pdf,application/pdf" required
+                            onchange="document.getElementById('certificateEnrollmentName').textContent = this.files[0]?.name || ''">
+                        @error('certificate_enrollment')<div class="error">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Certificate of Grade</label>
+                        <label class="file-upload-area" for="certificate_grade">
+                            <strong>Click to upload Certificate of Grade</strong>
+                            <p>PDF only</p>
+                            <div class="file-name" id="certificateGradeName"></div>
+                        </label>
+                        <input type="file" name="certificate_grade" id="certificate_grade" style="display:none;" accept=".pdf,application/pdf" required
+                            onchange="document.getElementById('certificateGradeName').textContent = this.files[0]?.name || ''">
+                        @error('certificate_grade')<div class="error">{{ $message }}</div>@enderror
                     </div>
                 </div>
             </div>
@@ -357,10 +420,10 @@
 </div>
 
 <footer style="margin-left:var(--sidebar-w);background:#fff;border-top:1px solid var(--border);padding:14px 24px;font-size:.78rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span>&copy; {{ date('Y') }} SPES Management System — PESO Camalaniugan</span>
+    <span>&copy; {{ date('Y') }} SPES Management System — PESO Lallo</span>
     <span>
         <a href="https://www.facebook.com" target="_blank" style="color:var(--primary);text-decoration:none;margin-right:14px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
-        <a href="mailto:pesocamalaniugan@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> pesocamalaniugan@gmail.com</a>
+        <a href="mailto:lgulalloinformationoffice@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> lgulalloinformationoffice@gmail.com</a>
     </span>
 </footer>
 
@@ -373,6 +436,18 @@ document.querySelector('input[name="birthday"]').addEventListener('change', func
     const m = today.getMonth() - dob.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
     document.getElementById('ageField').value = age > 0 ? age : '';
+});
+
+// Validate middle name - must be full name, not just initial
+document.getElementById('middle_name').addEventListener('blur', function () {
+    const middleNameWarning = document.getElementById('middle_name_warning');
+    const middleName = this.value.trim();
+    
+    if (middleName.length === 1) {
+        middleNameWarning.style.display = 'block';
+    } else {
+        middleNameWarning.style.display = 'none';
+    }
 });
 
 // Prevent double-submit

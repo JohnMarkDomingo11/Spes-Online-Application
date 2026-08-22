@@ -50,22 +50,17 @@
             <div class="card-body">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
                     @foreach([
-                        ['label'=>'Resume','key'=>'resume','icon'=>'fa-file-user'],
-                        ['label'=>'Application Letter','key'=>'application_letter','icon'=>'fa-file-pen'],
-                        ['label'=>'Certificate of Indigency','key'=>'indigency','icon'=>'fa-file-certificate'],
+                        ['label'=>'Birth Certificate','key'=>'resume','icon'=>'fa-file-user']
                     ] as $doc)
                         <div style="border:1.5px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
-                            <i class="fa-solid {{ $doc['icon'] }}" style="font-size:1.8rem;color:{{ $application->{$doc['key']} ? 'var(--primary)' : 'var(--border)' }};margin-bottom:8px;display:block;"></i>
+                            <i class="fa-solid {{ $doc['icon'] }} {{ $application->{$doc['key']} ? 'text-primary' : 'text-muted' }}"
+                               style="font-size:1.8rem;margin-bottom:8px;display:block;"></i>
                             <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;">{{ $doc['label'] }}</div>
                             @if($application->{$doc['key']})
-                                <a href="{{ route('applications.document.view', ['application' => $application->id, 'document' => $doc['key']]) }}"
-                                   class="btn btn-primary btn-sm" style="margin-bottom:6px; display:inline-flex; align-items:center; gap:6px;">
+                                <button type="button" onclick="openDocumentModal('{{ route('applications.document.view', ['application' => $application->id, 'document' => $doc['key']]) }}', '{{ $doc['label'] }}')"
+                                   class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:6px;">
                                     <i class="fa-solid fa-eye"></i> View
-                                </a>
-                                <a href="{{ asset('storage/'.$application->{$doc['key']}) }}" target="_blank"
-                                   class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px;" download>
-                                    <i class="fa-solid fa-download"></i> Download
-                                </a>
+                                </button>
                             @else
                                 <span style="font-size:.78rem;color:var(--text-muted);">Not uploaded</span>
                             @endif
@@ -75,6 +70,57 @@
             </div>
         </div>
     </div>
+
+<div id="documentModal" style="position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:2000; padding:24px;">
+    <div style="width:min(1100px, 92vw); max-height:90vh; background:#fff; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.25); overflow:hidden; border:1px solid var(--border);">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border); background:#f8fafb;">
+            <strong id="documentModalTitle" style="font-size:1rem; color:var(--primary);">Document Preview</strong>
+            <button type="button" onclick="closeDocumentModal()" class="btn btn-outline btn-sm" aria-label="Close preview">
+                <i class="fa-solid fa-xmark"></i> Close
+            </button>
+        </div>
+        <div style="padding:12px; background:#f5f5f5; height:80vh;">
+            <iframe id="documentFrame" title="Document Preview" style="width:100%; height:100%; border:none; background:#fff; border-radius:8px;"></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openDocumentModal(url, title) {
+        const modal = document.getElementById('documentModal');
+        const frame = document.getElementById('documentFrame');
+        const titleEl = document.getElementById('documentModalTitle');
+
+        titleEl.textContent = title + ' Preview';
+        modal.style.display = 'flex';
+
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const objectUrl = URL.createObjectURL(blob);
+                frame.src = objectUrl;
+            })
+            .catch(() => {
+                frame.src = url;
+            });
+    }
+
+    function closeDocumentModal() {
+        const modal = document.getElementById('documentModal');
+        const frame = document.getElementById('documentFrame');
+        modal.style.display = 'none';
+        if (frame.src && frame.src.startsWith('blob:')) {
+            URL.revokeObjectURL(frame.src);
+        }
+        frame.src = 'about:blank';
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeDocumentModal();
+        }
+    });
+</script>
 
     {{-- Right: Actions & Comments --}}
     <div>

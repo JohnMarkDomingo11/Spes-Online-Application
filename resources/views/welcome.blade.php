@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Official SPES Portal | PESO Camalaniugan</title>
+    <title>Official SPES Portal | PESO Lallo</title>
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -16,8 +16,8 @@
     {{-- ===== NAVBAR ===== --}}
     <nav class="navbar">
         <div class="logo">
-            <img src="{{ asset('images/spes.logo.jpg') }}" alt="LGU Logo">
-         SPES <span>Camalaniugan</span>
+            <img src="{{ asset('images/lallo_logo.png') }}" alt="LGU Logo">
+         SPES <span>Lal-lo</span>
         </div>
         
         {{-- Desktop Navigation --}}
@@ -223,9 +223,10 @@
     <footer>
         <div class="footer-container">
             <div class="footer-info">
-                <h4>PESO Camalaniugan</h4>
-                <p>Located at the Municipal Hall, Camalaniugan, Cagayan.</p>
-                <p>Email: pesocamalaniugan@gmail.com</p>
+                <h4>PESO Lallo</h4>
+                <p>Located on:P. DUPAYA STREET, CENTRO, LAL-LO, CAGAYAN, 3509
+                    </p>
+                <p>Email: lgulalloinformationoffice@gmail.com</p>
             </div>
             <div class="footer-socials">
                <div class="social-links">

@@ -40,6 +40,12 @@
                 <option value="approved" {{ request('status')==='approved' ? 'selected':'' }}>Approved</option>
                 <option value="denied"   {{ request('status')==='denied'   ? 'selected':'' }}>Denied</option>
             </select>
+            <select name="barangay">
+                <option value="">All Barangay</option>
+                @foreach(['Abagao','Alaguia','Bagumbayan','Bangag','Bical','Bicud','Binag','Cabayabasan (Capacuan)','Cagoran','Cambong','Catayauan','Catugan','Centro (Poblacion)','Cullit','Dagupan','Dalaya','Fabrica','Fusina','Jurisdiction','Lalafugan','Logac','Magallungon (Santa Teresa)','Magapit','Malanao','Maxingal','Naguilian','Paranum','Rosario','San Antonio (Lafu)','San Jose','San Juan','San Lorenzo','San Mariano','Santa Maria','Tucalana'] as $b)
+                    <option value="{{ $b }}" {{ request('barangay')===$b ? 'selected':'' }}>{{ $b }}</option>
+                @endforeach
+            </select>
             <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-magnifying-glass"></i> Filter</button>
             <a href="{{ route('admin.applications.index') }}" class="btn btn-outline btn-sm">Clear</a>
         </form>
@@ -81,7 +87,7 @@
                         <td style="font-size:.8rem;">
                             @if($app->resume)
                                 <a href="{{ asset('storage/'.$app->resume) }}" target="_blank" class="btn btn-outline btn-sm" style="margin-bottom:4px;" download>
-                                    <i class="fa-solid fa-file-arrow-down"></i> Resume
+                                    <i class="fa-solid fa-file-arrow-down"></i> Birth Certificate
                                 </a><br>
                             @endif
                             @if($app->application_letter)

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'PESO Camalaniugan') }} - Register</title>
+    <title>{{ config('app.name', 'PESO Lallo') }} - Register</title>
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
 </head>
 <body>
@@ -13,9 +13,9 @@
             <!-- Left Section -->
             <div class="auth-left">
                 <div class="logo-container">
-                    <img src="{{ asset('images/spes.logo.jpg') }}" alt="PESO Camalaniugan Logo"  class="logo"/>
+                    <img src="{{ asset('images/peso_lallo.jpg') }}" alt="PESO Lallo Logo" class="logo" />
                 </div>
-                <h1>PESO Camalaniugan</h1>
+                <h1>PESO Lallo</h1>
                 <p class="subtitle">Special Program for Employment of Students (SPES)</p>
                 <p>Apply online and track your application status anytime, anywhere.</p>
             </div>

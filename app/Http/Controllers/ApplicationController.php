@@ -83,7 +83,9 @@ class ApplicationController extends Controller
         }
 
         $validated = $request->validate([
-            'full_name'           => 'required|string|max:255',
+            'surname'             => 'required|string|max:255',
+            'first_name'          => 'required|string|max:255',
+            'middle_name'         => 'required|string|min:2|max:255',
             'sex'                 => 'required|in:Male,Female',
             'birthday'            => 'required|date|before:today',
             'age'                 => 'required|integer|min:15|max:30',
@@ -93,9 +95,13 @@ class ApplicationController extends Controller
             'education'           => 'required|string|max:100',
             'spes_status'         => 'required|in:new,baby',
             'mother_name'         => 'required|string|max:255',
+            'mother_occupation'   => 'required|string|max:255',
+            'mother_contact_no'   => 'required|string|max:20',
             'father_guardian_name'=> 'required|string|max:255',
-            'contact_no'          => 'required|string|max:20',
+            'father_occupation'   => 'required|string|max:255',
+            'father_contact_no'   => 'required|string|max:20',
             'messenger'           => 'nullable|string|max:255',
+            'facebook'            => 'nullable|string|max:255',
             'resume'              => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
             'application_letter'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
             'indigency'           => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
@@ -116,9 +122,14 @@ class ApplicationController extends Controller
             $indigencyPath = $request->file('indigency')->store('applications/indigency', 'public');
         }
 
+        $fullName = $validated['surname'] . ', ' . $validated['first_name'] . ', ' . $validated['middle_name'];
+
         Application::create([
             'user_id'              => Auth::id(),
-            'full_name'            => $validated['full_name'],
+            'full_name'            => $fullName,
+            'surname'              => $validated['surname'],
+            'first_name'           => $validated['first_name'],
+            'middle_name'          => $validated['middle_name'],
             'sex'                  => $validated['sex'],
             'birthday'             => $validated['birthday'],
             'age'                  => $validated['age'],
@@ -128,9 +139,13 @@ class ApplicationController extends Controller
             'education'            => $validated['education'],
             'spes_status'          => $validated['spes_status'],
             'mother_name'          => $validated['mother_name'],
+            'mother_occupation'    => $validated['mother_occupation'],
+            'mother_contact_no'    => $validated['mother_contact_no'],
             'father_guardian_name' => $validated['father_guardian_name'],
-            'contact_no'           => $validated['contact_no'],
+            'father_occupation'    => $validated['father_occupation'],
+            'father_contact_no'    => $validated['father_contact_no'],
             'messenger'            => $validated['messenger'] ?? null,
+            'facebook'             => $validated['facebook'] ?? null,
             'resume'               => $resumePath,
             'application_letter'   => $letterPath,
             'indigency'            => $indigencyPath,
@@ -146,7 +161,9 @@ class ApplicationController extends Controller
         $application = Application::where('user_id', Auth::id())->latest('created_at')->firstOrFail();
 
         $validated = $request->validate([
-            'full_name'           => 'required|string|max:255',
+            'surname'             => 'required|string|max:255',
+            'first_name'          => 'required|string|max:255',
+            'middle_name'         => 'required|string|min:2|max:255',
             'sex'                 => 'required|in:Male,Female',
             'birthday'            => 'required|date|before:today',
             'age'                 => 'required|integer|min:15|max:30',
@@ -156,10 +173,14 @@ class ApplicationController extends Controller
             'education'           => 'required|string|max:100',
             'spes_status'         => 'required|in:new,baby',
             'mother_name'         => 'required|string|max:255',
+            'mother_occupation'   => 'required|string|max:255',
+            'mother_contact_no'   => 'required|string|max:20',
             'father_guardian_name'=> 'required|string|max:255',
-            'contact_no'          => 'required|string|max:20',
+            'father_occupation'   => 'required|string|max:255',
+            'father_contact_no'   => 'required|string|max:20',
             'messenger'           => 'nullable|string|max:255',
-            'resume'              => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'facebook'            => 'nullable|string|max:255',
+            'resume'              => 'nullable|file|mimes:pdf|max:5120',
             'application_letter'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
             'indigency'           => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
         ]);
@@ -183,7 +204,10 @@ class ApplicationController extends Controller
             $application->indigency = $request->file('indigency')->store('applications/indigency', 'public');
         }
 
+        $fullName = $validated['surname'] . ', ' . $validated['first_name'] . ', ' . $validated['middle_name'];
+
         $updates = array_merge($validated, [
+            'full_name'          => $fullName,
             'resume'             => $application->resume,
             'application_letter' => $application->application_letter,
             'indigency'          => $application->indigency,
@@ -214,37 +238,6 @@ class ApplicationController extends Controller
         return view('application.applications.my-application', compact('application'));
     }
 
-    // -------------------------------------------------------
-    // ADMIN SIDE
-    // -------------------------------------------------------
-
-    /**
-     * Admin: list all applications.
-     */
-    public function index(Request $request)
-    {
-        $query = Application::with('user')->latest();
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('search')) {
-            $query->where('full_name', 'like', '%' . $request->search . '%');
-        }
-
-        $applications = $query->paginate(15);
-
-        // Stats for the top cards
-        $stats = [
-            'total'    => Application::count(),
-            'pending'  => Application::where('status', 'pending')->count(),
-            'approved' => Application::where('status', 'approved')->count(),
-            'denied'   => Application::where('status', 'denied')->count(),
-        ];
-
-        return view('admin.applications', compact('applications', 'stats'));
-    }
-
     /**
      * View a submitted application document.
      */
@@ -264,8 +257,47 @@ class ApplicationController extends Controller
             abort(404);
         }
 
-        return response()->file(Storage::disk('public')->path($path));
+        $filePath = Storage::disk('public')->path($path);
+
+        return response()->file($filePath, [
+            'Content-Disposition' => 'inline; filename="birth-certificate.pdf"',
+        ]);
     }
+
+    // -------------------------------------------------------
+    // ADMIN SIDE
+    // -------------------------------------------------------
+
+    /**
+     * Admin: list all applications.
+     */
+    public function index(Request $request)
+    {
+        $query = Application::with('user')->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('barangay')) {
+            $query->where('barangay', $request->barangay);
+        }
+        if ($request->filled('search')) {
+            $query->where('full_name', 'like', '%' . $request->search . '%');
+        }
+
+        $applications = $query->paginate(15);
+
+        // Stats for the top cards
+        $stats = [
+            'total'    => Application::count(),
+            'pending'  => Application::where('status', 'pending')->count(),
+            'approved' => Application::where('status', 'approved')->count(),
+            'denied'   => Application::where('status', 'denied')->count(),
+        ];
+
+        return view('admin.applications', compact('applications', 'stats'));
+    }
+
 
     /**
      * Admin: view a single application's full details.
