@@ -228,7 +228,12 @@
                 <p>Email: pesocamalaniugan@gmail.com</p>
             </div>
             <div class="footer-socials">
-                <a href="#"><i class="fa-brands fa-facebook"></i> Follow us on Facebook</a>
+               <div class="social-links">
+                <a href="https://www.facebook.com/share/1EacDYqY7N/"><i class="bi-brands bi-facebook"></i> Follow us on Facebook</a>
+                </div>
+                <div class="social-links">
+                <a href="https://www.instagram.com/official.lgulallo?igsh=MXU5dDJ1anR0dzEzaQ=="><i class="fa-brands fa-instagram"></i> Follow us on Instagram</a>
+               </div>
             </div>
         </div>
         <div class="copyright">
