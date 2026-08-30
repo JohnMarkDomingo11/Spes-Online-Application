@@ -1,13 +1,18 @@
 <?php
 
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\MasterListController;
+use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\PostApprovalFormController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public
 Route::get('/', function () {
-    return view('welcome');
+    $news = \App\Models\News::published()->take(5)->get();
+    return view('welcome', compact('news'));
 })->name('home');
 
 // Authenticated users
@@ -42,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Uploaded document viewer for authenticated users/admins
     Route::get('/applications/{application}/documents/{document}', [ApplicationController::class, 'viewDocument'])
-        ->where('document', 'resume|application_letter|indigency')
+        ->where('document', 'resume|certificate_enrollment|certificate_grade|application_letter|indigency')
         ->name('applications.document.view');
 });
 
@@ -114,9 +119,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/applications/{application}/deny',    [ApplicationController::class, 'deny'])->name('applications.deny');
     Route::post('/applications/{application}/comment', [ApplicationController::class, 'addComment'])->name('applications.comment');
     Route::get('/users', [ApplicationController::class, 'users'])->name('users');
-    Route::get('/settings', function () {
-        return view('admin.settings');
-    })->name('settings');
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    
+    // Export
+    Route::get('/applications/export', [ExportController::class, 'masterList'])->name('applications.export');
+    
+    // Master List
+    Route::get('/master-list', [MasterListController::class, 'index'])->name('masterlist.index');
+    Route::post('/master-list', [MasterListController::class, 'store'])->name('masterlist.store');
+    
+    // News
+    Route::resource('news', NewsController::class)->except(['show']);
+    Route::post('/news/{news}/toggle', [NewsController::class, 'togglePublish'])->name('news.toggle');
 });
 
 require __DIR__ . '/auth.php';

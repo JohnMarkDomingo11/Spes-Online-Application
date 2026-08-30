@@ -18,7 +18,7 @@ class Application extends Model
         'father_guardian_name', 'contact_no', 'messenger', 'facebook',
         'mother_occupation', 'father_occupation', 'mother_contact_no', 'father_contact_no',
         // Documents
-        'resume', 'application_letter', 'indigency',
+        'resume', 'certificate_enrollment', 'certificate_grade', 'application_letter', 'indigency',
         // Status
         'status', 'admin_comment',
         // Post-approval forms step tracker

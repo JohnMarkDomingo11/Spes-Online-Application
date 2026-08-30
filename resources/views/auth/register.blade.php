@@ -4,25 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'PESO Lallo') }} - Register</title>
+    <title>{{ config('app.name', 'PESO LAL-LO') }} - Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-wrapper">
-            <!-- Left Section -->
             <div class="auth-left">
                 <div class="logo-container">
-                    <img src="{{ asset('images/peso_lallo.jpg') }}" alt="PESO Lallo Logo" class="logo" />
+                    <img src="{{ asset('images/peso_lallo.jpg') }}" alt="PESO LAL-LO Logo" class="logo" />
                 </div>
-                <h1>PESO Lallo</h1>
+                <h1>PESO <span>Lal-lo</span></h1>
                 <p class="subtitle">Special Program for Employment of Students (SPES)</p>
                 <p>Apply online and track your application status anytime, anywhere.</p>
+                <div class="auth-features">
+                    <div><i aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M9 4h6M9 2h6v4H9zM6 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1M7 12l2 2 4-4M7 17h8" /></svg></i><span>Easy<br>Application</span></div>
+                    <div><i aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 20V10h4v10H4zm6 0V4h4v16h-4zm6 0v-7h4v7h-4z" /></svg></i><span>Track<br>Status</span></div>
+                    <div><i aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 4 6v5c0 5.2 3.4 8.8 8 10 4.6-1.2 8-4.8 8-10V6l-8-3zm0 5a2 2 0 0 1 2 2v1h1v5H9v-5h1v-1a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1z" /></svg></i><span>Secure &amp;<br>Reliable</span></div>
+                </div>
             </div>
 
-            <!-- Right Section -->
             <div class="auth-right">
-                <h2>Create Account</h2>
+                <h2>Create <span>Account</span></h2>
                 <p class="subtitle">Join us and start your employment journey</p>
 
                 <form method="POST" action="{{ route('register') }}">
@@ -41,22 +45,6 @@
                             autofocus 
                         />
                         @error('name')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Username -->
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input 
-                            id="username" 
-                            type="text" 
-                            name="username" 
-                            value="{{ old('username') }}"
-                            placeholder="Choose a unique username"
-                            required 
-                        />
-                        @error('username')
                             <span class="error-message">{{ $message }}</span>
                         @enderror
                     </div>

@@ -10,11 +10,11 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --primary: #004d40;
-            --primary-dark: #00251a;
-            --primary-light: #39796b;
-            --accent: #ffab00;
-            --accent2: #ff6f00;
+            --primary: #8B0000;
+            --primary-dark: #660000;
+            --primary-light: #A52A2A;
+            --accent: #FFD700;
+            --accent2: #FFA500;
             --danger: #c62828;
             --success: #2e7d32;
             --info: #1565c0;
@@ -246,9 +246,9 @@ document.addEventListener('DOMContentLoaded', function(){
 <!-- ── Sidebar ───────────────────────────────────────────── -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('images/lallo_logo.png') }}" alt="PESO Lallo Logo">
+        <img src="{{ asset('images/welcome_logo.jpg') }}" alt="PESO LAL-LO Logo">
         <div>
-            <span>SPES Admin<small>PESO Lallo</small></span>
+            <span>SPES Admin<small>PESO LAL-LO</small></span>
         </div>
     </div>
 
@@ -268,9 +268,23 @@ document.addEventListener('DOMContentLoaded', function(){
            class="nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
             <i class="fa-solid fa-users"></i> Users
         </a>
+
+        <div class="nav-section">Settings</div>
         <a href="{{ route('admin.settings') }}"
            class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
-            <i class="fa-solid fa-gear"></i> Settings
+            <i class="fa-solid fa-calendar-days"></i> Due Date
+        </a>
+        <a href="{{ route('admin.applications.index') }}"
+           class="nav-link {{ request()->routeIs('admin.applications.index') && request()->has('export') ? 'active' : '' }}">
+            <i class="fa-solid fa-file-excel"></i> Download Excel
+        </a>
+        <a href="{{ route('admin.masterlist.index') }}"
+           class="nav-link {{ request()->routeIs('admin.masterlist.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-list-check"></i> Master List
+        </a>
+        <a href="{{ route('admin.news.index') }}"
+           class="nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
+            <i class="fa-solid fa-newspaper"></i> News
         </a>
     </nav>
 
@@ -352,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <!-- ── Footer ─────────────────────────────────────────────── -->
 <footer style="margin-left:var(--sidebar-w);background:#fff;border-top:1px solid var(--border);padding:14px 28px;font-size:.78rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span>&copy; {{ date('Y') }} SPES Management System — PESO Lallo</span>
+    <span>&copy; {{ date('Y') }} SPES Management System — PESO LAL-LO</span>
     <span>
         <a href="https://www.facebook.com" target="_blank" style="color:var(--primary);text-decoration:none;margin-right:14px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
         <a href="mailto:lgulalloinformationoffice@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> lgulalloinformationoffice@gmail.com</a>

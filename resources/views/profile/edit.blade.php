@@ -10,9 +10,17 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --primary: #0b4f2b; --primary-dark: #07321a; --accent: #ffb454;
-            --bg: #f3f6f5; --white: #fff; --text: #123; --text-muted: #6b7680;
-            --border: #e6eef0; --shadow: 0 6px 18px rgba(16,24,32,.08);
+            --primary: #8B0000;
+            --primary-dark: #660000;
+            --primary-light: #A52A2A;
+            --accent: #FFD700;
+            --accent-soft: #fff4bf;
+            --bg: #f0f2f5;
+            --white: #fff;
+            --text: #212121;
+            --text-muted: #6b7280;
+            --border: #e0e0e0;
+            --shadow: 0 2px 12px rgba(0,0,0,.08);
             --sidebar-w: 260px;
         }
         body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }

@@ -17,12 +17,13 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'profile_photo' => ['nullable', 'image', 'max:5120'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'first_name' => ['required', 'string', 'max:255'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
+            'first_name' => ['nullable', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
-            'sex' => ['required', Rule::in(['Male', 'Female'])],
-            'date_of_birth' => ['required', 'date'],
-            'place_of_birth' => ['required', 'string', 'max:255'],
+            'sex' => ['nullable', Rule::in(['Male', 'Female'])],
+            'date_of_birth' => ['nullable', 'date'],
+            'place_of_birth' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'string', 'max:255'],
             'citizenship' => ['nullable', 'string', 'max:255'],
             'email' => [

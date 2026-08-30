@@ -25,7 +25,6 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Username</th>
                         <th>Email</th>
                         <th>Application Status</th>
                         <th>Registered</th>
@@ -36,7 +35,6 @@
                     <tr>
                         <td style="color:var(--text-muted)">{{ $users->firstItem() + $i }}</td>
                         <td><strong>{{ $user->name }}</strong></td>
-                        <td>{{ $user->username }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
                             @php $app = $user->applications()->first(); @endphp

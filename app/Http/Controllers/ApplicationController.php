@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Application;
+use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +29,13 @@ class ApplicationController extends Controller
      */
     public function create()
     {
+        // Check if application window is open
+        $settings = SystemSetting::current();
+        if (!$settings->isApplicationOpen()) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Applications are currently closed.');
+        }
+
         $existing = Application::where('user_id', Auth::id())->latest('created_at')->first();
         if ($existing) {
             if ($existing->status === 'denied') {
@@ -70,6 +78,13 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if application window is open
+        $settings = SystemSetting::current();
+        if (!$settings->isApplicationOpen()) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Applications are currently closed.');
+        }
+
         // Prevent duplicate applications
         $existing = Application::where('user_id', Auth::id())->latest('created_at')->first();
         if ($existing) {
@@ -103,17 +118,27 @@ class ApplicationController extends Controller
             'messenger'           => 'nullable|string|max:255',
             'facebook'            => 'nullable|string|max:255',
             'resume'              => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'certificate_enrollment' => 'nullable|file|mimes:pdf|max:5120',
+            'certificate_grade'     => 'nullable|file|mimes:pdf|max:5120',
             'application_letter'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
             'indigency'           => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
         ]);
 
         // Handle file uploads
         $resumePath  = null;
+        $enrollmentPath = null;
+        $gradePath = null;
         $letterPath  = null;
         $indigencyPath = null;
 
         if ($request->hasFile('resume')) {
             $resumePath = $request->file('resume')->store('applications/resumes', 'public');
+        }
+        if ($request->hasFile('certificate_enrollment')) {
+            $enrollmentPath = $request->file('certificate_enrollment')->store('applications/enrollment', 'public');
+        }
+        if ($request->hasFile('certificate_grade')) {
+            $gradePath = $request->file('certificate_grade')->store('applications/grades', 'public');
         }
         if ($request->hasFile('application_letter')) {
             $letterPath = $request->file('application_letter')->store('applications/letters', 'public');
@@ -147,6 +172,8 @@ class ApplicationController extends Controller
             'messenger'            => $validated['messenger'] ?? null,
             'facebook'             => $validated['facebook'] ?? null,
             'resume'               => $resumePath,
+            'certificate_enrollment' => $enrollmentPath,
+            'certificate_grade'    => $gradePath,
             'application_letter'   => $letterPath,
             'indigency'            => $indigencyPath,
             'status'               => 'pending',
@@ -181,6 +208,8 @@ class ApplicationController extends Controller
             'messenger'           => 'nullable|string|max:255',
             'facebook'            => 'nullable|string|max:255',
             'resume'              => 'nullable|file|mimes:pdf|max:5120',
+            'certificate_enrollment' => 'nullable|file|mimes:pdf|max:5120',
+            'certificate_grade'     => 'nullable|file|mimes:pdf|max:5120',
             'application_letter'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
             'indigency'           => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
         ]);
@@ -190,6 +219,14 @@ class ApplicationController extends Controller
                 Storage::disk('public')->delete($application->resume);
             }
             $application->resume = $request->file('resume')->store('applications/resumes', 'public');
+        }
+        foreach (['certificate_enrollment' => 'applications/enrollment', 'certificate_grade' => 'applications/grades'] as $document => $directory) {
+            if ($request->hasFile($document)) {
+                if ($application->{$document}) {
+                    Storage::disk('public')->delete($application->{$document});
+                }
+                $application->{$document} = $request->file($document)->store($directory, 'public');
+            }
         }
         if ($request->hasFile('application_letter')) {
             if ($application->application_letter) {
@@ -209,6 +246,8 @@ class ApplicationController extends Controller
         $updates = array_merge($validated, [
             'full_name'          => $fullName,
             'resume'             => $application->resume,
+            'certificate_enrollment' => $application->certificate_enrollment,
+            'certificate_grade'  => $application->certificate_grade,
             'application_letter' => $application->application_letter,
             'indigency'          => $application->indigency,
         ]);
@@ -243,7 +282,7 @@ class ApplicationController extends Controller
      */
     public function viewDocument(Application $application, string $document)
     {
-        if (!in_array($document, ['resume', 'application_letter', 'indigency'])) {
+        if (!in_array($document, ['resume', 'certificate_enrollment', 'certificate_grade', 'application_letter', 'indigency'])) {
             abort(404);
         }
 

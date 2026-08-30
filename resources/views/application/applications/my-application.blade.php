@@ -8,9 +8,18 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --primary: #0b4f2b; --primary-dark: #07321a; --accent: #ffb454;
-            --bg: #f3f6f5; --white: #fff; --text: #123; --text-muted: #6b7680;
-            --border: #e6eef0; --shadow: 0 6px 18px rgba(16,24,32,.08); --sidebar-w: 260px;
+            --primary: #8B0000;
+            --primary-dark: #660000;
+            --primary-light: #A52A2A;
+            --accent: #FFD700;
+            --accent-soft: #fff4bf;
+            --bg: #f0f2f5;
+            --white: #fff;
+            --text: #212121;
+            --text-muted: #6b7280;
+            --border: #e0e0e0;
+            --shadow: 0 2px 12px rgba(0,0,0,.08);
+            --sidebar-w: 260px;
         }
         body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
         .sidebar { position:fixed; top:0; left:0; width:var(--sidebar-w); height:100vh;
@@ -130,7 +139,7 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
         <img src="{{ asset('images/peso_lallo.jpg') }}" alt="SPES">
-        <div><span>SPES Portal<small>PESO Lallo</small></span></div>
+        <div><span>SPES Portal<small>PESO LAL-LO</small></span></div>
     </div>
     <nav class="sidebar-nav">
         <a href="{{ route('dashboard') }}" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
@@ -333,22 +342,23 @@
             </div>
 
             <div class="card">
-                <div class="card-header"><h2><i class="fa-solid fa-folder-open"></i> Uploaded Documents</h2></div>
+                <div class="card-header"><h2>Uploaded Documents</h2></div>
                 <div class="card-body">
                     <div class="doc-grid">
                         @foreach([
-                            ['label'=>'Birth Certificate','key'=>'resume','icon'=>'fa-file-user','color'=>'#1565c0'],
+                            ['label'=>'Birth Certificate','key'=>'resume','color'=>'#1565c0'],
+                            ['label'=>'Certificate of Enrollment','key'=>'certificate_enrollment','color'=>'#2e7d32'],
+                            ['label'=>'Certificate of Grade','key'=>'certificate_grade','color'=>'#ef6c00'],
                         ] as $doc)
                         <div class="doc-item">
-                            <i class="fa-solid {{ $doc['icon'] }}" style="color:{{ $application->{$doc['key']} ? $doc['color'] : '#ccc' }}"></i>
                             <div class="label">{{ $doc['label'] }}</div>
                             @if($application->{$doc['key']})
                                 <button type="button" onclick="openDocumentModal('{{ route('applications.document.view', ['application' => $application->id, 'document' => $doc['key']]) }}', '{{ $doc['label'] }}')" style="display:inline-flex;align-items:center;gap:6px;justify-content:center;min-width:110px;padding:8px 16px;border:0;border-radius:8px;background:#0d47a1;color:#fff;cursor:pointer;font-size:.72rem;font-weight:600;line-height:1.2;">
-                                    <i class="fa-solid fa-eye"></i> View
+                                    View
                                 </button>
                             @else
                                 <a href="{{ route('applications.edit') }}" style="display:inline-flex;align-items:center;gap:6px;justify-content:center;min-width:110px;padding:8px 16px;border-radius:8px;background:#1976d2;color:#fff;text-decoration:none;font-size:.72rem;font-weight:600;line-height:1.2;">
-                                    <i class="fa-solid fa-upload"></i> Upload
+                                    Upload
                                 </a>
                             @endif
                         </div>
@@ -445,7 +455,7 @@
 </div>
 
 <footer style="margin-left:var(--sidebar-w);background:#fff;border-top:1px solid var(--border);padding:14px 24px;font-size:.78rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span>&copy; {{ date('Y') }} SPES Management System — PESO Lallo</span>
+    <span>&copy; {{ date('Y') }} SPES Management System — PESO LAL-LO</span>
     <span>
         <a href="https://www.facebook.com" target="_blank" style="color:var(--primary);text-decoration:none;margin-right:14px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
         <a href="mailto:lgulalloinformationoffice@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> lgulalloinformationoffice@gmail.com</a>

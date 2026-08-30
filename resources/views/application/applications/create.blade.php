@@ -8,10 +8,19 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --primary: #0b4f2b; --primary-dark: #07321a; --accent: #ffb454;
-            --bg: #f3f6f5; --white: #fff; --text: #123; --text-muted: #6b7680;
-            --border: #e6eef0; --shadow: 0 6px 18px rgba(16,24,32,.08);
-            --danger: #c62828; --sidebar-w: 260px;
+            --primary: #8B0000;
+            --primary-dark: #660000;
+            --primary-light: #A52A2A;
+            --accent: #FFD700;
+            --accent-soft: #fff4bf;
+            --bg: #f0f2f5;
+            --white: #fff;
+            --text: #212121;
+            --text-muted: #6b7280;
+            --border: #e0e0e0;
+            --shadow: 0 2px 12px rgba(0,0,0,.08);
+            --danger: #c62828;
+            --sidebar-w: 260px;
         }
         body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
 
@@ -74,14 +83,19 @@
         .radio-opt input { width:16px; height:16px; cursor:pointer; accent-color:var(--primary); }
 
         /* File upload */
+        .document-upload-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; }
+        .document-upload { min-width:0; display:flex; flex-direction:column; gap:6px; }
+        .document-upload > label:first-child { font-size:.8rem; font-weight:600; color:var(--text); }
         .file-upload-area {
-            border:2px dashed var(--border); border-radius:10px; padding:20px;
+            min-width:0; overflow:hidden;
+            min-height:92px; border:1.5px dashed var(--border); border-radius:8px; padding:12px;
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
             text-align:center; cursor:pointer; transition:border-color .2s, background .2s;
         }
         .file-upload-area:hover { border-color:var(--primary); background:#f0f9f7; }
-        .file-upload-area i { font-size:2rem; color:var(--primary); margin-bottom:8px; display:block; }
-        .file-upload-area p { font-size:.82rem; color:var(--text-muted); margin-top:4px; }
-        .file-name { font-size:.78rem; color:var(--primary); font-weight:600; margin-top:6px; }
+        .file-upload-area i { font-size:1.15rem; color:var(--primary); margin-bottom:5px; }
+        .file-upload-area strong { font-size:.78rem; }
+        .file-name { font-size:.7rem; color:var(--primary); font-weight:600; margin-top:4px; overflow:hidden; text-overflow:ellipsis; max-width:100%; white-space:nowrap; }
 
         /* Submit */
         .btn-submit { background:var(--primary); color:#fff; border:none; padding:13px 32px;
@@ -109,6 +123,7 @@
             .topbar, .page-wrapper { margin-left:0; }
             .form-row { grid-template-columns:1fr; }
             .form-row.three { grid-template-columns:1fr; }
+            .document-upload-grid { grid-template-columns:1fr; }
         }
         .hamburger { display:none; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--primary); margin-right:10px; }
         @media(max-width:768px) { .hamburger { display:block; } }
@@ -119,7 +134,7 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
         <img src="{{ asset('images/spes.logo.jpg') }}" alt="SPES">
-        <div><span>SPES Portal<small>PESO Lallo</small></span></div>
+        <div><span>SPES Portal<small>PESO LAL-LO</small></span></div>
     </div>
     <nav class="sidebar-nav">
         <a href="{{ route('dashboard') }}" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
@@ -362,42 +377,37 @@
                 <h3>Documentary Requirements <span style="font-weight:400;font-size:.85rem;">(Optional but recommended)</span></h3>
             </div>
             <div class="form-card-body">
-                <p style="font-size:.83rem;color:var(--text-muted);margin-bottom:18px;">
+                <p style="font-size:.83rem;color:var(--text-muted);margin-bottom:14px;">
                     Upload a PDF file only. Maximum 5MB per file.
                 </p>
-                <div class="form-row full">
-                    <div class="form-group">
+                <div class="document-upload-grid">
+                    <div class="document-upload">
                         <label>Birth Certificate</label>
                         <label class="file-upload-area" for="resume">
                             <i class="fa-solid fa-file-user"></i>
-                            <strong>Click to upload Birth Certificate</strong>
-                            <p>PDF only</p>
+                            <strong>Choose PDF</strong>
                             <div class="file-name" id="resumeName"></div>
                         </label>
                         <input type="file" name="resume" id="resume" style="display:none;" accept=".pdf,application/pdf" required
                             onchange="document.getElementById('resumeName').textContent = this.files[0]?.name || ''">
                         @error('resume')<div class="error">{{ $message }}</div>@enderror
                     </div>
-                </div>
-                <div class="form-row full">
-                    <div class="form-group">
+                    <div class="document-upload">
                         <label>Certificate of Enrollment</label>
                         <label class="file-upload-area" for="certificate_enrollment">
-                            <strong>Click to upload Certificate of Enrollment</strong>
-                            <p>PDF only</p>
+                            <i class="fa-solid fa-file-lines"></i>
+                            <strong>Choose PDF</strong>
                             <div class="file-name" id="certificateEnrollmentName"></div>
                         </label>
                         <input type="file" name="certificate_enrollment" id="certificate_enrollment" style="display:none;" accept=".pdf,application/pdf" required
                             onchange="document.getElementById('certificateEnrollmentName').textContent = this.files[0]?.name || ''">
                         @error('certificate_enrollment')<div class="error">{{ $message }}</div>@enderror
                     </div>
-                </div>
-                <div class="form-row full">
-                    <div class="form-group">
+                    <div class="document-upload">
                         <label>Certificate of Grade</label>
                         <label class="file-upload-area" for="certificate_grade">
-                            <strong>Click to upload Certificate of Grade</strong>
-                            <p>PDF only</p>
+                            <i class="fa-solid fa-file-lines"></i>
+                            <strong>Choose PDF</strong>
                             <div class="file-name" id="certificateGradeName"></div>
                         </label>
                         <input type="file" name="certificate_grade" id="certificate_grade" style="display:none;" accept=".pdf,application/pdf" required
@@ -420,7 +430,7 @@
 </div>
 
 <footer style="margin-left:var(--sidebar-w);background:#fff;border-top:1px solid var(--border);padding:14px 24px;font-size:.78rem;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-    <span>&copy; {{ date('Y') }} SPES Management System — PESO Lallo</span>
+    <span>&copy; {{ date('Y') }} SPES Management System — PESO LAL-LO</span>
     <span>
         <a href="https://www.facebook.com" target="_blank" style="color:var(--primary);text-decoration:none;margin-right:14px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
         <a href="mailto:lgulalloinformationoffice@gmail.com" style="color:var(--primary);text-decoration:none;"><i class="fa-solid fa-envelope"></i> lgulalloinformationoffice@gmail.com</a>

@@ -50,7 +50,19 @@ class ProfileController extends Controller
         unset($data['profile_photo']);
 
         $user->email = $data['email'];
-        $user->name = trim($data['first_name'] . ' ' . $data['middle_name'] . ' ' . $data['last_name']);
+
+        if (isset($data['name']) && trim((string) $data['name']) !== '') {
+            $user->name = $data['name'];
+        } else {
+            $profileFirstName = $data['first_name'] ?? $user->profile?->first_name ?? '';
+            $profileMiddleName = $data['middle_name'] ?? $user->profile?->middle_name ?? '';
+            $profileLastName = $data['last_name'] ?? $user->profile?->last_name ?? '';
+
+            $fullName = trim($profileFirstName . ' ' . $profileMiddleName . ' ' . $profileLastName);
+            if ($fullName !== '') {
+                $user->name = $fullName;
+            }
+        }
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;

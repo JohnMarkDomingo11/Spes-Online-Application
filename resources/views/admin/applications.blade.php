@@ -32,23 +32,22 @@
     </div>
     <div class="card-body">
         {{-- Filters --}}
-        <form method="GET" class="search-bar" style="margin-bottom:20px;">
-            <input type="text" name="search" placeholder="Search by name…" value="{{ request('search') }}" style="min-width:220px;">
-            <select name="status">
-                <option value="">All Status</option>
-                <option value="pending"  {{ request('status')==='pending'  ? 'selected':'' }}>Pending</option>
-                <option value="approved" {{ request('status')==='approved' ? 'selected':'' }}>Approved</option>
-                <option value="denied"   {{ request('status')==='denied'   ? 'selected':'' }}>Denied</option>
-            </select>
-            <select name="barangay">
-                <option value="">All Barangay</option>
-                @foreach(['Abagao','Alaguia','Bagumbayan','Bangag','Bical','Bicud','Binag','Cabayabasan (Capacuan)','Cagoran','Cambong','Catayauan','Catugan','Centro (Poblacion)','Cullit','Dagupan','Dalaya','Fabrica','Fusina','Jurisdiction','Lalafugan','Logac','Magallungon (Santa Teresa)','Magapit','Malanao','Maxingal','Naguilian','Paranum','Rosario','San Antonio (Lafu)','San Jose','San Juan','San Lorenzo','San Mariano','Santa Maria','Tucalana'] as $b)
-                    <option value="{{ $b }}" {{ request('barangay')===$b ? 'selected':'' }}>{{ $b }}</option>
-                @endforeach
-            </select>
-            <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-magnifying-glass"></i> Filter</button>
-            <a href="{{ route('admin.applications.index') }}" class="btn btn-outline btn-sm">Clear</a>
-        </form>
+        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+            <form method="GET" class="search-bar" style="margin-bottom: 0; flex: 1; min-width: 300px;">
+                <input type="text" name="search" placeholder="Search by name…" value="{{ request('search') }}" style="min-width:220px;">
+                <select name="barangay">
+                    <option value="">All Barangay</option>
+                    @foreach(['Abagao','Alaguia','Bagumbayan','Bangag','Bical','Bicud','Binag','Cabayabasan (Capacuan)','Cagoran','Cambong','Catayauan','Catugan','Centro (Poblacion)','Cullit','Dagupan','Dalaya','Fabrica','Fusina','Jurisdiction','Lalafugan','Logac','Magallungon (Santa Teresa)','Magapit','Malanao','Maxingal','Naguilian','Paranum','Rosario','San Antonio (Lafu)','San Jose','San Juan','San Lorenzo','San Mariano','Santa Maria','Tucalana'] as $b)
+                        <option value="{{ $b }}" {{ request('barangay')===$b ? 'selected':'' }}>{{ $b }}</option>
+                    @endforeach
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-magnifying-glass"></i> Filter</button>
+                <a href="{{ route('admin.applications.index') }}" class="btn btn-outline btn-sm">Clear</a>
+            </form>
+            <a href="{{ route('admin.applications.export', request()->query()) }}" class="btn btn-primary btn-sm" style="white-space: nowrap;">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+            </a>
+        </div>
 
         @if($applications->isEmpty())
             <p style="color:var(--text-muted);text-align:center;padding:40px 0;">No applications found.</p>
@@ -62,8 +61,6 @@
                         <th>Full Name</th>
                         <th>Barangay</th>
                         <th>SPES Type</th>
-                        <th>Contact</th>
-                        <th>Documents</th>
                         <th>Status</th>
                         <th>Submitted</th>
                         <th>Actions</th>
@@ -82,27 +79,6 @@
                             <span class="badge {{ $app->spes_status === 'new' ? 'badge-new' : 'badge-baby' }}">
                                 {{ $app->spes_status === 'new' ? 'New' : 'SPES Baby' }}
                             </span>
-                        </td>
-                        <td>{{ $app->contact_no }}</td>
-                        <td style="font-size:.8rem;">
-                            @if($app->resume)
-                                <a href="{{ asset('storage/'.$app->resume) }}" target="_blank" class="btn btn-outline btn-sm" style="margin-bottom:4px;" download>
-                                    <i class="fa-solid fa-file-arrow-down"></i> Birth Certificate
-                                </a><br>
-                            @endif
-                            @if($app->application_letter)
-                                <a href="{{ asset('storage/'.$app->application_letter) }}" target="_blank" class="btn btn-outline btn-sm" style="margin-bottom:4px;" download>
-                                    <i class="fa-solid fa-file-arrow-down"></i> Letter
-                                </a><br>
-                            @endif
-                            @if($app->indigency)
-                                <a href="{{ asset('storage/'.$app->indigency) }}" target="_blank" class="btn btn-outline btn-sm" download>
-                                    <i class="fa-solid fa-file-arrow-down"></i> Indigency
-                                </a>
-                            @endif
-                            @if(!$app->resume && !$app->application_letter && !$app->indigency)
-                                <span style="color:var(--text-muted)">—</span>
-                            @endif
                         </td>
                         <td>
                             <span class="badge badge-{{ $app->status }}">

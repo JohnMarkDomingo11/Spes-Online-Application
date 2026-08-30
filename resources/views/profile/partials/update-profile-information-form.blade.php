@@ -121,10 +121,17 @@
             padding: 0.5rem;
         }
 
-        .upload-circle small {
-            font-size: 0.8rem;
-            color: #6b7280;
-            line-height: 1.1;
+        .upload-circle input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
         }
 
         .actions-row {
@@ -306,7 +313,7 @@
                 </select>
                 <x-input-error class="text-xs mt-1" :messages="$errors->get('sex')" />
             </div>
-            <label class="upload-circle" for="profile_photo">
+            <label class="upload-circle" style="cursor: pointer;">
                 <div class="upload-placeholder" style="{{ $user->profile_photo ? 'display:none;' : '' }}">
                     <small>Upload<br>Photo</small>
                 </div>
@@ -315,7 +322,7 @@
                      alt="Profile photo"
                      style="{{ $user->profile_photo ? '' : 'display:none;' }}"
                      class="w-full h-full object-cover rounded-full" />
-                <input id="profile_photo" type="file" name="profile_photo" accept="image/*" class="sr-only" />
+                <input id="profile_photo" type="file" name="profile_photo" accept="image/*" />
             </label>
             <x-input-error class="text-xs mt-1" :messages="$errors->get('profile_photo')" />
         </div>
@@ -549,9 +556,24 @@
                 return;
             }
 
+            // Handle file selection
             fileInput.addEventListener('change', function (event) {
                 const file = event.target.files && event.target.files[0];
                 if (!file) {
+                    return;
+                }
+
+                // Validate file is an image
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file.');
+                    fileInput.value = '';
+                    return;
+                }
+
+                // Validate file size (5MB max)
+                if (file.size > 5120 * 1024) {
+                    alert('File size must be less than 5MB.');
+                    fileInput.value = '';
                     return;
                 }
 
@@ -560,11 +582,14 @@
                     if (previewImage) {
                         previewImage.src = e.target.result;
                         previewImage.style.display = 'block';
-                        previewImage.classList.remove('hidden');
                     }
                     if (uploadPlaceholder) {
                         uploadPlaceholder.style.display = 'none';
                     }
+                };
+                reader.onerror = function () {
+                    alert('Error reading file. Please try again.');
+                    fileInput.value = '';
                 };
                 reader.readAsDataURL(file);
             });

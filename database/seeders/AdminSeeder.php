@@ -10,7 +10,7 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        $adminEmail = 'lgulalloinformationoffice@gmail.com';
+        $adminEmail = 'lgulallo@gmail.com';
 
         $admin = User::where('email', $adminEmail)
             ->orWhere('username', 'pesoadmin')

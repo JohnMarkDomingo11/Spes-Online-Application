@@ -46,20 +46,20 @@
 
         {{-- Uploaded Documents --}}
         <div class="card" style="margin-bottom:20px;">
-            <div class="card-header"><h2><i class="fa-solid fa-folder-open"></i> Uploaded Documents</h2></div>
+            <div class="card-header"><h2>Uploaded Documents</h2></div>
             <div class="card-body">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
                     @foreach([
-                        ['label'=>'Birth Certificate','key'=>'resume','icon'=>'fa-file-user']
+                        ['label'=>'Birth Certificate','key'=>'resume'],
+                        ['label'=>'Certificate of Enrollment','key'=>'certificate_enrollment'],
+                        ['label'=>'Certificate of Grade','key'=>'certificate_grade']
                     ] as $doc)
                         <div style="border:1.5px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
-                            <i class="fa-solid {{ $doc['icon'] }} {{ $application->{$doc['key']} ? 'text-primary' : 'text-muted' }}"
-                               style="font-size:1.8rem;margin-bottom:8px;display:block;"></i>
                             <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;">{{ $doc['label'] }}</div>
                             @if($application->{$doc['key']})
                                 <button type="button" onclick="openDocumentModal('{{ route('applications.document.view', ['application' => $application->id, 'document' => $doc['key']]) }}', '{{ $doc['label'] }}')"
                                    class="btn btn-primary btn-sm" style="display:inline-flex; align-items:center; gap:6px;">
-                                    <i class="fa-solid fa-eye"></i> View
+                                    View
                                 </button>
                             @else
                                 <span style="font-size:.78rem;color:var(--text-muted);">Not uploaded</span>
