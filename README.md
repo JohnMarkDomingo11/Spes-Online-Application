@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SPES Application System
 
 A comprehensive Laravel-based document management and approval system for education personnel applications and submissions.
@@ -32,7 +31,7 @@ A comprehensive Laravel-based document management and approval system for educat
 
 ## Technology Stack
 
-- **Backend**: [Laravel 11](https://laravel.com) - PHP web framework
+- **Backend**: [Laravel 12](https://laravel.com) - PHP web framework
 - **Frontend**: [Blade Templates](https://laravel.com/docs/blade) with [Tailwind CSS](https://tailwindcss.com)
 - **Database**: MySQL
 - **Build Tools**: Vite, PostCSS
@@ -196,9 +195,26 @@ Key routes:
 
 ## File Storage
 
-Uploaded files are stored in:
-- `storage/app/private/` - Private secure storage
-- `storage/app/public/` - Public accessible files
+Applicant documents are stored on the `public` filesystem disk under:
+- `storage/app/public/applications/` - Application documents
+- `storage/app/public/profile-photos/` - Profile photos
+
+Run `php artisan storage:link` so these files are available through `public/storage/`.
+
+### Render Deployment
+
+This is a PHP/Laravel application. Render does not provide a native PHP runtime, so deploy it as a Docker web service using the repository `Dockerfile` and `render.yaml`. Leave Render's Build Command and Start Command fields empty for a Docker service; the Dockerfile builds the application and its `ENTRYPOINT` starts Nginx, PHP-FPM, and the queue worker.
+
+The container listens on Render's `PORT` environment variable, defaulting to `10000` locally. Applicant documents and profile photos are stored on the local filesystem, so attach persistent storage or configure an S3-compatible disk before accepting production uploads.
+
+Use database-backed drivers in Render and ensure the corresponding `cache`, `jobs`, and `sessions` tables are migrated:
+
+```env
+SESSION_DRIVER=database
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+FILESYSTEM_DISK=public
+```
 
 Ensure proper permissions:
 ```bash
@@ -276,6 +292,3 @@ For issues and questions:
 
 **Last Updated**: 2026  
 **Maintainer**: Development Team
-=======
-# Web-Based-Online-SPES-Application-System
->>>>>>> caa91ec75f91b0a222285ae8fdf3d931e64af85d
