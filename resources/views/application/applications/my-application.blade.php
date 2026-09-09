@@ -23,10 +23,10 @@
         }
         body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
         .sidebar { position:fixed; top:0; left:0; width:var(--sidebar-w); height:100vh;
-            background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%); display:flex; flex-direction:column; z-index:100; }
+            background:var(--primary-dark); display:flex; flex-direction:column; z-index:100; }
         .sidebar-brand { padding:22px 20px 18px; border-bottom:1px solid rgba(255,255,255,.1);
             display:flex; align-items:center; gap:12px; }
-        .sidebar-brand img { width:38px; height:38px; border-radius:50%; object-fit:cover; }
+        .sidebar-brand img { width:40px; height:40px; border-radius:50%; object-fit:cover; }
         .sidebar-brand span { font-size:.95rem; font-weight:700; color:#fff; line-height:1.2; }
         .sidebar-brand small { display:block; font-size:.7rem; color:rgba(255,255,255,.5); }
         .sidebar-nav { padding:16px 12px; flex:1; }
@@ -138,13 +138,14 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('images/peso_lallo.jpg') }}" alt="SPES">
+        <img src="{{ asset('images/welcome_logo.jpg') }}" alt="SPES">
         <div><span>SPES Portal<small>PESO LAL-LO</small></span></div>
     </div>
     <nav class="sidebar-nav">
-        <a href="{{ route('dashboard') }}" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
-        <a href="{{ route('applications.myApplication') }}" class="nav-link active"><i class="fa-solid fa-file-lines"></i> My Application</a>
+        <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="{{ route('applications.myApplication') }}" class="nav-link {{ request()->routeIs(['applications.myApplication', 'applications.form2', 'applications.form2.store']) ? 'active' : '' }}"><i class="fa-solid fa-file-lines"></i> My Application</a>
         <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}"><i class="fa-solid fa-user-pen"></i> Edit Profile</a>
+        <a href="{{ $application && $application->status === 'denied' ? route('applications.edit') : route('applications.create') }}" class="nav-link {{ request()->routeIs(['applications.create', 'applications.store', 'applications.edit']) ? 'active' : '' }}"><i class="fa-solid {{ $application && $application->status === 'denied' ? 'fa-rotate-right' : 'fa-file-circle-plus' }}"></i> {{ $application && $application->status === 'denied' ? 'Reapply' : 'Apply Now' }}</a>
     </nav>
     <div class="sidebar-footer">
         <form method="POST" action="{{ route('logout') }}">
@@ -330,9 +331,13 @@
                     <div class="detail-item"><div class="detail-label">Parent Status</div><div class="detail-value">{{ $application->parent_status }}</div></div>
                     <div class="detail-item"><div class="detail-label">Education</div><div class="detail-value">{{ $application->education }}</div></div>
                     <div class="detail-item"><div class="detail-label">SPES Type</div><div class="detail-value">{{ $application->spes_status === 'new' ? 'New (1st time)' : 'SPES Baby (2nd/3rd time)' }}</div></div>
-                    <div class="detail-item"><div class="detail-label">Contact</div><div class="detail-value">{{ $application->contact_no }}</div></div>
+                    <div class="detail-item"><div class="detail-label">Facebook Profile</div><div class="detail-value">{{ $application->facebook }}</div></div>
                     <div class="detail-item"><div class="detail-label">Mother's Name</div><div class="detail-value">{{ $application->mother_name }}</div></div>
+                    <div class="detail-item"><div class="detail-label">Mother's Occupation</div><div class="detail-value">{{ $application->mother_occupation }}</div></div>
+                    <div class="detail-item"><div class="detail-label">Mother's Contact Number</div><div class="detail-value">{{ $application->mother_contact_no }}</div></div>
                     <div class="detail-item"><div class="detail-label">Father / Guardian</div><div class="detail-value">{{ $application->father_guardian_name }}</div></div>
+                    <div class="detail-item"><div class="detail-label">Father's Occupation</div><div class="detail-value">{{ $application->father_occupation }}</div></div>
+                    <div class="detail-item"><div class="detail-label">Father's Contact Number</div><div class="detail-value">{{ $application->father_contact_no }}</div></div>
                     @if($application->messenger)
                     <div class="detail-item" style="grid-column:1/-1;border-right:none;">
                         <div class="detail-label">Messenger</div><div class="detail-value">{{ $application->messenger }}</div>
@@ -346,9 +351,8 @@
                 <div class="card-body">
                     <div class="doc-grid">
                         @foreach([
-                            ['label'=>'Birth Certificate','key'=>'resume','color'=>'#1565c0'],
+                            ['label'=>'Resume','key'=>'resume','color'=>'#1565c0'],
                             ['label'=>'Certificate of Enrollment','key'=>'certificate_enrollment','color'=>'#2e7d32'],
-                            ['label'=>'Certificate of Grade','key'=>'certificate_grade','color'=>'#ef6c00'],
                         ] as $doc)
                         <div class="doc-item">
                             <div class="label">{{ $doc['label'] }}</div>
@@ -428,13 +432,6 @@
                     <p><strong>Current Status</strong><br>
                         <span class="badge badge-{{ $application->status }}" style="margin-top:4px;">{{ ucfirst($application->status) }}</span>
                     </p>
-                    @if($application->status === 'approved')
-                    <hr style="margin:14px 0;border:none;border-top:1px solid var(--border);">
-                    <p><strong>Forms Progress</strong><br>
-                        <span style="font-size:1.3rem;font-weight:800;color:var(--primary);">{{ $application->forms_step }}</span>
-                        <span style="color:var(--text-muted);font-size:.85rem;"> / 3 completed</span>
-                    </p>
-                    @endif
                 </div>
             </div>
 

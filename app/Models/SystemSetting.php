@@ -29,12 +29,16 @@ class SystemSetting extends Model
      */
     public function isApplicationOpen()
     {
-        $now = now();
-        
+        $timezone = config('app.timezone', 'UTC');
+        $now = now()->setTimezone($timezone);
+
         if ($this->application_start_date === null || $this->application_end_date === null) {
             return false; // Both dates must be set
         }
 
-        return $now->isBetween($this->application_start_date, $this->application_end_date);
+        $start = $this->application_start_date->setTimezone($timezone);
+        $end = $this->application_end_date->setTimezone($timezone);
+
+        return $now->greaterThanOrEqualTo($start) && $now->lessThanOrEqualTo($end);
     }
 }

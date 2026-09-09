@@ -59,7 +59,7 @@
             </p>
             <div class="cta-group">
                 <a href="#about" class="btn-outline">Learn More</a>
-                <a href="{{ url('/register') }}" class="btn-filled">Apply Now</a>
+                <a href="{{ auth()->check() ? route('applications.create') : route('register') }}" class="btn-filled">Apply Now</a>
             </div>
         </div>
     </section>
@@ -139,31 +139,6 @@
                 </div>
             </div>
 
-            <div class="requirements-box fade-in-up">
-                <h3><i class="fa-solid fa-folder-open"></i> Documentary Requirements</h3>
-                <div class="req-grid">
-                    <ul>
-                        <li>
-                            <i class="fa-solid fa-check"></i>
-                            <strong>Birth Certificate:</strong> Photocopy of PSA or LCR birth certificate.
-                        </li>
-                        <li>
-                            <i class="fa-solid fa-check"></i>
-                            <strong>School Record:</strong> Form 138 (Report Card) or Certification of Grades (GWA must be passing).
-                        </li>
-                    </ul>
-                    <ul>
-                        <li>
-                            <i class="fa-solid fa-check"></i>
-                            <strong>Proof of Income:</strong> Latest ITR of parents or Certificate of Indigence from the Barangay.
-                        </li>
-                        <li>
-                            <i class="fa-solid fa-check"></i>
-                            <strong>ID Photos:</strong> 2 pieces recent passport-size or 2x2 ID pictures.
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
     </section>
 

@@ -26,10 +26,10 @@
 
         /* Sidebar (dashboard style) */
         .sidebar { position:fixed; top:0; left:0; width:var(--sidebar-w); height:100vh;
-            background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%); display:flex; flex-direction:column; z-index:100; }
+            background:var(--primary-dark); display:flex; flex-direction:column; z-index:100; }
         .sidebar-brand { padding:22px 20px 18px; border-bottom:1px solid rgba(255,255,255,.1);
             display:flex; align-items:center; gap:12px; }
-        .sidebar-brand img { width:38px; height:38px; border-radius:50%; object-fit:cover; }
+        .sidebar-brand img { width:40px; height:40px; border-radius:50%; object-fit:cover; }
         .sidebar-brand span { font-size:.95rem; font-weight:700; color:#fff; line-height:1.2; }
         .sidebar-brand small { display:block; font-size:.7rem; color:rgba(255,255,255,.5); }
         .sidebar-nav { padding:16px 12px; flex:1; }
@@ -133,14 +133,14 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('images/spes.logo.jpg') }}" alt="SPES">
+        <img src="{{ asset('images/welcome_logo.jpg') }}" alt="SPES">
         <div><span>SPES Portal<small>PESO LAL-LO</small></span></div>
     </div>
     <nav class="sidebar-nav">
-        <a href="{{ route('dashboard') }}" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
-        <a href="{{ route('applications.myApplication') }}" class="nav-link"><i class="fa-solid fa-file-lines"></i> My Application</a>
+        <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="{{ route('applications.myApplication') }}" class="nav-link {{ request()->routeIs(['applications.myApplication', 'applications.form2', 'applications.form2.store']) ? 'active' : '' }}"><i class="fa-solid fa-file-lines"></i> My Application</a>
         <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}"><i class="fa-solid fa-user-pen"></i> Edit Profile</a>
-        <a href="{{ route('applications.create') }}" class="nav-link active"><i class="fa-solid fa-file-circle-plus"></i> Apply Now</a>
+        <a href="{{ $application && $application->status === 'denied' ? route('applications.edit') : route('applications.create') }}" class="nav-link {{ request()->routeIs(['applications.create', 'applications.store', 'applications.edit']) ? 'active' : '' }}"><i class="fa-solid {{ $application && $application->status === 'denied' ? 'fa-rotate-right' : 'fa-file-circle-plus' }}"></i> {{ $application && $application->status === 'denied' ? 'Reapply' : 'Apply Now' }}</a>
     </nav>
     <div class="sidebar-footer">
         <form method="POST" action="{{ route('logout') }}">
@@ -378,7 +378,7 @@
             </div>
             <div class="form-card-body">
                 <p style="font-size:.83rem;color:var(--text-muted);margin-bottom:14px;">
-                    Upload a PDF file only. Maximum 5MB per file.
+                    PDF files only. Maximum 5 MB per file.
                 </p>
                 <div class="document-upload-grid">
                     <div class="document-upload">
@@ -389,7 +389,7 @@
                             <div class="file-name" id="resumeName"></div>
                         </label>
                         <input type="file" name="resume" id="resume" style="display:none;" accept=".pdf,application/pdf" required
-                            onchange="document.getElementById('resumeName').textContent = this.files[0]?.name || ''">
+                            onchange="validateDocument(this, 'resumeName')">
                         @error('resume')<div class="error">{{ $message }}</div>@enderror
                     </div>
                     <div class="document-upload">
@@ -400,19 +400,8 @@
                             <div class="file-name" id="certificateEnrollmentName"></div>
                         </label>
                         <input type="file" name="certificate_enrollment" id="certificate_enrollment" style="display:none;" accept=".pdf,application/pdf" required
-                            onchange="document.getElementById('certificateEnrollmentName').textContent = this.files[0]?.name || ''">
+                            onchange="validateDocument(this, 'certificateEnrollmentName')">
                         @error('certificate_enrollment')<div class="error">{{ $message }}</div>@enderror
-                    </div>
-                    <div class="document-upload">
-                        <label>Certificate of Grade</label>
-                        <label class="file-upload-area" for="certificate_grade">
-                            <i class="fa-solid fa-file-lines"></i>
-                            <strong>Choose PDF</strong>
-                            <div class="file-name" id="certificateGradeName"></div>
-                        </label>
-                        <input type="file" name="certificate_grade" id="certificate_grade" style="display:none;" accept=".pdf,application/pdf" required
-                            onchange="document.getElementById('certificateGradeName').textContent = this.files[0]?.name || ''">
-                        @error('certificate_grade')<div class="error">{{ $message }}</div>@enderror
                     </div>
                 </div>
             </div>
@@ -439,6 +428,21 @@
 
 <script>
 // Auto-calculate age from birthday
+function validateDocument(input, nameId) {
+    const file = input.files[0];
+    const maxSize = 5 * 1024 * 1024;
+    const isPdf = file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'));
+
+    if (file && (!isPdf || file.size > maxSize)) {
+        alert(!isPdf ? 'Only PDF files are accepted.' : 'Each PDF file must be 5 MB or smaller.');
+        input.value = '';
+        document.getElementById(nameId).textContent = '';
+        return;
+    }
+
+    document.getElementById(nameId).textContent = file?.name || '';
+}
+
 document.querySelector('input[name="birthday"]').addEventListener('change', function () {
     const dob = new Date(this.value);
     const today = new Date();

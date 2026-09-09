@@ -11,10 +11,32 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('news')) {
+            Schema::create('news', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->longText('content');
+                $table->boolean('is_published')->default(false);
+                $table->timestamp('published_at')->nullable();
+                $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade');
+                $table->timestamps();
+            });
+
+            return;
+        }
+
         Schema::table('news', function (Blueprint $table) {
-            // Add missing columns if they don't exist
+            if (!Schema::hasColumn('news', 'title')) {
+                $table->string('title')->after('id');
+            }
+            if (!Schema::hasColumn('news', 'content')) {
+                $table->longText('content')->after('title');
+            }
             if (!Schema::hasColumn('news', 'is_published')) {
                 $table->boolean('is_published')->default(false)->after('content');
+            }
+            if (!Schema::hasColumn('news', 'published_at')) {
+                $table->timestamp('published_at')->nullable()->after('is_published');
             }
             if (!Schema::hasColumn('news', 'created_by')) {
                 $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade')->after('published_at');
@@ -27,14 +49,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('news', function (Blueprint $table) {
-            if (Schema::hasColumn('news', 'is_published')) {
-                $table->dropColumn('is_published');
-            }
-            if (Schema::hasColumn('news', 'created_by')) {
-                $table->dropForeign(['created_by']);
-                $table->dropColumn('created_by');
-            }
-        });
+        if (Schema::hasTable('news')) {
+            Schema::drop('news');
+        }
     }
 };

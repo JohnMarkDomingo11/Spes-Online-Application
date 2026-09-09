@@ -24,9 +24,9 @@
             --sidebar-w: 260px;
         }
         body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
-        .sidebar { position: fixed; top:0; left:0; width:var(--sidebar-w); height:100vh; background:linear-gradient(180deg,var(--primary) 0%,var(--primary-dark) 100%); display:flex; flex-direction:column; z-index:100; }
+        .sidebar { position: fixed; top:0; left:0; width:var(--sidebar-w); height:100vh; background:var(--primary-dark); display:flex; flex-direction:column; z-index:100; }
         .sidebar-brand { padding:22px 20px 18px; border-bottom:1px solid rgba(255,255,255,.1); display:flex; align-items:center; gap:12px; }
-        .sidebar-brand img { width:38px; height:38px; border-radius:50%; object-fit:cover; }
+        .sidebar-brand img { width:40px; height:40px; border-radius:50%; object-fit:cover; }
         .sidebar-brand span { font-size:.95rem; font-weight:700; color:#fff; line-height:1.2; }
         .sidebar-brand small { display:block; font-size:.7rem; color:rgba(255,255,255,.5); }
         .sidebar-nav { padding:16px 12px; flex:1; }
@@ -57,21 +57,21 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('images/spes.logo.jpg') }}" alt="SPES">
+        <img src="{{ asset('images/welcome_logo.jpg') }}" alt="SPES">
         <div><span>SPES Portal<small>PESO Camalaniugan</small></span></div>
     </div>
     <nav class="sidebar-nav">
         <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class="fa-solid fa-house"></i> Dashboard
         </a>
-        <a href="{{ route('applications.myApplication') }}" class="nav-link {{ request()->routeIs('applications.myApplication') ? 'active' : '' }}">
+        <a href="{{ route('applications.myApplication') }}" class="nav-link {{ request()->routeIs(['applications.myApplication', 'applications.form2', 'applications.form2.store']) ? 'active' : '' }}">
             <i class="fa-solid fa-file-lines"></i> My Application
         </a>
         <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
             <i class="fa-solid fa-user-pen"></i> Edit Profile
         </a>
-        <a href="{{ route('applications.create') }}" class="nav-link {{ request()->routeIs('applications.create') ? 'active' : '' }}">
-            <i class="fa-solid fa-file-circle-plus"></i> Apply Now
+        <a href="{{ auth()->user()->applications()->where('status', 'denied')->exists() ? route('applications.edit') : route('applications.create') }}" class="nav-link {{ request()->routeIs(['applications.create', 'applications.store', 'applications.edit']) ? 'active' : '' }}">
+            <i class="fa-solid {{ auth()->user()->applications()->where('status', 'denied')->exists() ? 'fa-rotate-right' : 'fa-file-circle-plus' }}"></i> {{ auth()->user()->applications()->where('status', 'denied')->exists() ? 'Reapply' : 'Apply Now' }}
         </a>
     </nav>
     <div class="sidebar-footer">

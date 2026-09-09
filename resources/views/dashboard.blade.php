@@ -30,21 +30,21 @@
         /* Sidebar */
         .sidebar {
             position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
-            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 100%);
-            display: flex; flex-direction: column; z-index: 100; padding-bottom: 12px;
+            background: var(--primary-dark); display: flex; flex-direction: column; z-index: 100;
+            padding-bottom: 12px; overflow-y: auto; overflow-x: hidden;
         }
         .sidebar-brand {
             padding: 22px 20px 18px; border-bottom: 1px solid rgba(255,255,255,.08);
             display: flex; align-items: center; gap: 12px;
         }
-        .sidebar-brand img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
+        .sidebar-brand img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
         .sidebar-brand span { font-size: 1rem; font-weight: 800; color: #fff; line-height: 1.1; }
         .sidebar-brand small { display: block; font-size: .72rem; color: rgba(255,255,255,.72); }
-        .sidebar-nav { padding: 18px 12px; flex: 1; }
+        .sidebar-nav { padding: 18px 12px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
         .nav-link {
-            display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,.8);
+            display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; color: rgba(255,255,255,.8);
             text-decoration: none; padding: 13px 14px; border-radius: 10px; font-size: .96rem;
-            transition: background .18s, color .18s, transform .08s; margin-bottom: 8px;
+            transition: background .18s, color .18s, transform .08s; margin-bottom: 0;
         }
         .nav-link i { width: 18px; text-align: center; }
         .nav-link:hover { background: rgba(255,255,255,.08); transform: translateX(2px); color: #fff; }
@@ -54,7 +54,7 @@
         .nav-link.active i { color: var(--primary-dark); }
         .sidebar-user {
             padding: 16px 14px; border-top: 1px solid rgba(255,255,255,.08);
-            display: flex; gap: 12px; align-items: center;
+            display: flex; gap: 12px; align-items: center; margin-top: auto;
         }
         .sidebar-user img {
             width: 46px; height: 46px; border-radius: 50%; border: 2px solid rgba(255,255,255,.08);
@@ -77,8 +77,24 @@
             background: #f9f5ea; border: 1px solid var(--border); padding: 8px 12px;
             border-radius: 10px; color: var(--primary); font-weight: 700;
         }
+        .notif { position:relative; }
+        .notif .bell { position:relative; display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; background:#f3f6f5; cursor:pointer; }
+        .notif .count { position:absolute; top:-6px; right:-6px; background:#e53935; color:#fff; font-size:.72rem; padding:3px 6px; border-radius:999px; font-weight:700; }
+        .notif-dropdown { position:absolute; right:0; top:48px; width:320px; background:#fff; box-shadow:0 10px 30px rgba(0,0,0,.08); border-radius:10px; display:none; z-index:120; }
+        .notif-dropdown.open { display:block; }
+        .notif-item { padding:12px; border-bottom:1px solid #f1f5f6; display:flex; gap:10px; align-items:flex-start; }
+        .notif-item:last-child { border-bottom:none; }
+        .notif-item .meta { font-size:.9rem; }
+        .notif-empty { padding:12px; color:#6b7680; }
         .user-pill { display: flex; align-items: center; gap: 10px; }
         .user-pill img { width: 38px; height: 38px; border-radius: 50%; }
+
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; white-space: nowrap; }
+        .badge-pending  { background: #fff8e1; color: #e65100; }
+        .badge-approved { background: #e8f5e9; color: #2e7d32; }
+        .badge-denied   { background: #ffebee; color: #c62828; }
+        .badge-new      { background: #e3f2fd; color: #1565c0; }
+        .badge-baby     { background: #f3e5f5; color: #6a1b9a; }
 
         /* Main */
         .page-wrapper { margin-left: var(--sidebar-w); padding-top: 72px; }
@@ -179,28 +195,22 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <img src="{{ asset('images/lal-lo_logo.png') }}" alt="PESO LAL-LO Logo">
+        <img src="{{ asset('images/welcome_logo.jpg') }}" alt="PESO LAL-LO Logo">
         <div><span>SPES Portal<small>PESO LAL-LO</small></span></div>
     </div>
     <nav class="sidebar-nav">
         <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class="fa-solid fa-house"></i> Dashboard
         </a>
-        <a href="{{ route('applications.myApplication') }}" class="nav-link {{ request()->routeIs('applications.myApplication') ? 'active' : '' }}">
+        <a href="{{ route('applications.myApplication') }}" class="nav-link {{ request()->routeIs(['applications.myApplication', 'applications.form2', 'applications.form2.store']) ? 'active' : '' }}">
             <i class="fa-solid fa-file-lines"></i> My Application
         </a>
         <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
             <i class="fa-solid fa-user-pen"></i> Edit Profile
         </a>
-        @if(!$application)
-        <a href="{{ route('applications.create') }}" class="nav-link {{ request()->routeIs('applications.create') ? 'active' : '' }}">
-            <i class="fa-solid fa-file-circle-plus"></i> Apply Now
+        <a href="{{ $application && $application->status === 'denied' ? route('applications.edit') : route('applications.create') }}" class="nav-link {{ request()->routeIs(['applications.create', 'applications.store', 'applications.edit']) ? 'active' : '' }}">
+            <i class="fa-solid {{ $application && $application->status === 'denied' ? 'fa-rotate-right' : 'fa-file-circle-plus' }}"></i> {{ $application && $application->status === 'denied' ? 'Reapply' : 'Apply Now' }}
         </a>
-        @elseif($application->status === 'denied')
-        <a href="{{ route('applications.edit') }}" class="nav-link {{ request()->routeIs('applications.edit') ? 'active' : '' }}">
-            <i class="fa-solid fa-rotate-right"></i> Reapply
-        </a>
-        @endif
     </nav>
     <div class="sidebar-user">
         <img src="{{ Auth::user()->profile_photo_url ?? asset('images/avatar.png') }}" alt="{{ Auth::user()->name }}">
@@ -390,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     <div class="how-list">
                         <div class="how-item"><div class="num">1</div><div><b>Prepare Your Documents</b><div style="color:var(--text-muted);font-size:.9rem;">Gather your Resume, Application Letter, and Certificate of Indigency.</div></div></div>
                         <div class="how-item"><div class="num">2</div><div><b>Fill Out the Form</b><div style="color:var(--text-muted);font-size:.9rem;">Click "Apply Now" and complete all required fields.</div></div></div>
-                        <div class="how-item"><div class="num">3</div><div><b>Upload Documents</b><div style="color:var(--text-muted);font-size:.9rem;">Upload clear scanned copies (PDF, JPG, PNG).</div></div></div>
+                        <div class="how-item"><div class="num">3</div><div><b>Upload Documents</b><div style="color:var(--text-muted);font-size:.9rem;">Upload PDF files only. Each file must be 5 MB or smaller.</div></div></div>
                         <div class="how-item"><div class="num">4</div><div><b>Submit & Wait</b><div style="color:var(--text-muted);font-size:.9rem;">The PESO officer will review your application.</div></div></div>
                         <div class="how-item"><div class="num">5</div><div><b>Check Feedback</b><div style="color:var(--text-muted);font-size:.9rem;">Review any admin comments in "My Application".</div></div></div>
                     </div>

@@ -37,10 +37,14 @@
                         </span>
                     </div>
                 </div>
-                <div class="detail-item"><div class="detail-label">Contact Number</div><div class="detail-value">{{ $application->contact_no }}</div></div>
+                <div class="detail-item"><div class="detail-label">Facebook Profile</div><div class="detail-value">{{ $application->facebook ?? '—' }}</div></div>
                 <div class="detail-item"><div class="detail-label">Messenger Account</div><div class="detail-value">{{ $application->messenger ?? '—' }}</div></div>
                 <div class="detail-item"><div class="detail-label">Mother's Name</div><div class="detail-value">{{ $application->mother_name }}</div></div>
+                <div class="detail-item"><div class="detail-label">Mother's Occupation</div><div class="detail-value">{{ $application->mother_occupation }}</div></div>
+                <div class="detail-item"><div class="detail-label">Mother's Contact Number</div><div class="detail-value">{{ $application->mother_contact_no }}</div></div>
                 <div class="detail-item"><div class="detail-label">Father / Guardian</div><div class="detail-value">{{ $application->father_guardian_name }}</div></div>
+                <div class="detail-item"><div class="detail-label">Father's Occupation</div><div class="detail-value">{{ $application->father_occupation }}</div></div>
+                <div class="detail-item"><div class="detail-label">Father's Contact Number</div><div class="detail-value">{{ $application->father_contact_no }}</div></div>
             </div>
         </div>
 
@@ -51,8 +55,7 @@
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
                     @foreach([
                         ['label'=>'Birth Certificate','key'=>'resume'],
-                        ['label'=>'Certificate of Enrollment','key'=>'certificate_enrollment'],
-                        ['label'=>'Certificate of Grade','key'=>'certificate_grade']
+                        ['label'=>'Certificate of Enrollment','key'=>'certificate_enrollment']
                     ] as $doc)
                         <div style="border:1.5px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
                             <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;">{{ $doc['label'] }}</div>
